@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/group_main"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/drawer_home"/>
+
+        <item
+            android:id="@+id/nav_contacts"
+            android:title="@string/drawer_contacts"/>
+
+        <item
+            android:id="@+id/nav_gps"
+            android:title="@string/drawer_gps"
+            />
+
+        <item
+            android:id="@+id/nav_reminders"
+            android:title="@string/drawer_reminder"
+            />
+
+        <item
+            android:id="@+id/nav_timer"
+            android:title="@string/drawer_timer"
+            />
+
+        <item
+            android:id="@+id/nav_listen"
+            android:title="@string/drawer_start_listener"
+            />
+
+        <item
+            android:id="@+id/nav_add_contact"
+            android:title="@string/drawer_add_contact"
+            />
+
+        <item
+            android:id="@+id/nav_log_out"
+            android:title="@string/drawer_exit_app"/>
+    </group>
+</menu>
