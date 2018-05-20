@@ -47,7 +47,7 @@
     <string name="user_set">A pleasure meeting you %1$s what would you have me do</string>
     <string name="to_who">Who should i %1$s</string>
     <string name="call">call</string>
-    <string name="send_sms">send sms to</string>
+    <string name="send_sms">send an sms to</string>
     <string name="sms">sms</string>
     <string name="last_command">last command</string>
     <string name="message">What message should i send</string>

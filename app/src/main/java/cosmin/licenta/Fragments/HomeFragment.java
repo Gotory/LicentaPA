@@ -157,7 +157,7 @@ public class HomeFragment extends Fragment {
                 } else {
                     activity.tts.speak(activity.getString(R.string.hello_user_default), TextToSpeech.QUEUE_FLUSH, null);
                 }
-                Helper.getInstance().promptSpeechInput(activity);
+                activity.listenAfterDelay(2000,false, activity);
             }
         });
 

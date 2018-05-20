@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -33,7 +34,6 @@ import android.view.inputmethod.InputMethodManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Timer;
 
 import cosmin.licenta.Common.Contact;
 import cosmin.licenta.Common.Helper;
@@ -44,7 +44,6 @@ import cosmin.licenta.Fragments.GpsFragment;
 import cosmin.licenta.Fragments.HomeFragment;
 import cosmin.licenta.Fragments.TimerFragment;
 
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static AudioManager audioManager;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public Activity activity;
 
-    private ArrayList<String> commandList;
+    public ArrayList<String> commandList;
 
     private int step;
     private String phone;
@@ -181,19 +180,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case MyConstants.REQ_CODE_SPEECH_INPUT: {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    Log.d("+++", results.toString());
                     if (prefs.getString(MyConstants.prefsUser, "").equals("")) {
                         String name = results.get(0);
                         prefs.edit().putString(MyConstants.prefsUser, name).apply();
                         tts.speak(getString(R.string.user_set, name), TextToSpeech.QUEUE_FLUSH, null);
-                        Helper.getInstance().promptSpeechInput(this);
+                        listenAfterDelay(2000, false, this);
                         break;
                     }
 
                     for (String result : results) {
                         if (result.toLowerCase().contains(getString(R.string.call))) {
                             commandList.add("call");
+                            drawerButtonActions(R.id.nav_contacts);
                         } else if (result.toLowerCase().contains(getString(R.string.sms))) {
                             commandList.add("sms");
+                            drawerButtonActions(R.id.nav_contacts);
                         } else if (result.toLowerCase().contains(getString(R.string.last_command))) {
                             String lastCommand = prefs.getString(MyConstants.prefsLastCommand, "");
                             if (!lastCommand.isEmpty()) {
@@ -208,13 +210,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case MyConstants.REQ_CODE_ARGS: {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    Log.d("+++", results.toString());
                     String command = commandList.get(0);
                     switch (command) {
                         case "call": {
                             String result = results.get(0);
                             ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.nav_contacts);
                             for (Contact contact : fragment.mContactsList) {
-                                if (contact.getName().equals(result)) {
+                                if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
                                     Helper.getInstance().callNumber(contact.getPhoneNumber(), this);
                                     commandList.clear();
                                 }
@@ -226,11 +229,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 String result = results.get(0);
                                 ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.nav_contacts);
                                 for (Contact contact : fragment.mContactsList) {
-                                    if (contact.getName().equals(result)) {
+                                    if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
                                         phone = contact.getPhoneNumber();
                                         step++;
                                         tts.speak(getString(R.string.message), TextToSpeech.QUEUE_FLUSH, null);
-                                        Helper.getInstance().requestCommandArgs(this);
+                                        listenAfterDelay(2000, true, this);
                                         break;
                                     }
                                 }
@@ -253,25 +256,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void makeNewCommand() {
         String command = "";
-        if(!commandList.isEmpty()) {
+        if (!commandList.isEmpty()) {
             command = commandList.get(0);
         }
         switch (command) {
             case "call": {
                 prefs.edit().putString(MyConstants.prefsLastCommand, "call").apply();
-                drawerButtonActions(R.id.nav_contacts);
                 tts.speak(getString(R.string.to_who, getString(R.string.call)), TextToSpeech.QUEUE_FLUSH, null);
-                Helper.getInstance().requestCommandArgs(this);
+                listenAfterDelay(2000, true, this);
                 break;
             }
             case "sms": {
                 prefs.edit().putString(MyConstants.prefsLastCommand, "sms").apply();
-                drawerButtonActions(R.id.nav_contacts);
                 tts.speak(getString(R.string.to_who, getString(R.string.send_sms)), TextToSpeech.QUEUE_FLUSH, null);
-                Helper.getInstance().requestCommandArgs(this);
+                listenAfterDelay(2000, true, this);
                 break;
             }
         }
+
+    }
+
+    public void listenAfterDelay(int delay, final boolean forArgs, final MainActivity activity) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!forArgs) {
+                    Helper.getInstance().promptSpeechInput(activity);
+                } else {
+                    Helper.getInstance().requestCommandArgs(activity);
+                }
+            }
+        }, delay);
     }
 
     @Override
@@ -356,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     tts.speak(activity.getString(R.string.hello_user_default), TextToSpeech.QUEUE_FLUSH, null);
                 }
-                Helper.getInstance().promptSpeechInput(this);
+                listenAfterDelay(2000, false, this);
                 Helper.getInstance().changeSelectedNavItem(this);
                 break;
             }
