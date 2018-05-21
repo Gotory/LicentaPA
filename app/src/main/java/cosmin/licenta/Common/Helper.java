@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import cosmin.licenta.AnswerCallsActivity;
 import cosmin.licenta.Fragments.ContactsFragment;
+import cosmin.licenta.Fragments.CurrencyFragment;
 import cosmin.licenta.Fragments.EventReminderFragment;
 import cosmin.licenta.Fragments.GpsFragment;
 import cosmin.licenta.Fragments.HomeFragment;
@@ -108,6 +109,8 @@ public class Helper {
                 activity.navView.getMenu().getItem(0).setChecked(true);
             } else if (currentFragment instanceof TimerFragment) {
                 activity.navView.getMenu().getItem(4).setChecked(true);
+            } else if (currentFragment instanceof CurrencyFragment){
+                activity.navView.getMenu().getItem(5).setChecked(true);
             }
         }
     }

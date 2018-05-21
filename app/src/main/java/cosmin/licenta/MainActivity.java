@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ import cosmin.licenta.Common.Contact;
 import cosmin.licenta.Common.Helper;
 import cosmin.licenta.Common.MyConstants;
 import cosmin.licenta.Fragments.ContactsFragment;
+import cosmin.licenta.Fragments.CurrencyFragment;
 import cosmin.licenta.Fragments.EventReminderFragment;
 import cosmin.licenta.Fragments.GpsFragment;
 import cosmin.licenta.Fragments.HomeFragment;
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public Activity activity;
 
     public ArrayList<String> commandList;
+
+    private FrameLayout appBase;
 
     private int step;
     private String phone;
@@ -74,6 +78,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navView = findViewById(R.id.navigation_view);
         prefs = activity.getSharedPreferences(MyConstants.PREFS_NAME, Context.MODE_PRIVATE);
+        appBase = findViewById(R.id.frag_content_frame);
+        appBase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                View focus = activity.getCurrentFocus();
+                if (focus != null) {
+                    inputMethodManager.hideSoftInputFromWindow(focus.getWindowToken(), 0);
+                }
+            }
+        });
 
         if (navView != null) {
             navView.getMenu().getItem(0).setChecked(true);
@@ -170,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         isAppActive = false;
+        tts.stop();
+        tts.shutdown();
     }
 
     @Override
@@ -215,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     switch (command) {
                         case "call": {
                             String result = results.get(0);
-                            ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.nav_contacts);
+                            ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
                             for (Contact contact : fragment.mContactsList) {
                                 if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
                                     Helper.getInstance().callNumber(contact.getPhoneNumber(), this);
@@ -227,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         case "sms": {
                             if (step == 0) {
                                 String result = results.get(0);
-                                ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.nav_contacts);
+                                ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
                                 for (Contact contact : fragment.mContactsList) {
                                     if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
                                         phone = contact.getPhoneNumber();
@@ -298,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (getSupportFragmentManager().findFragmentByTag(MyConstants.gps_tag) != null ||
                     getSupportFragmentManager().findFragmentByTag(MyConstants.calendar_tag) != null ||
                     getSupportFragmentManager().findFragmentByTag(MyConstants.timer_tag) != null ||
+                    getSupportFragmentManager().findFragmentByTag(MyConstants.currency_tag) != null ||
                     getSupportFragmentManager().findFragmentByTag(MyConstants.contacts_tag) != null) {
                 showHomeFragment();
             } else {
@@ -363,6 +381,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_timer: {
                 replaceFragment(TimerFragment.newInstance(), MyConstants.timer_tag);
                 toolbar.setTitle(getString(R.string.drawer_timer));
+                break;
+            }
+            case R.id.nav_currency: {
+                replaceFragment(CurrencyFragment.newInstance(), MyConstants.currency_tag);
+                toolbar.setTitle(getString(R.string.drawer_currency));
                 break;
             }
             case R.id.nav_listen: {

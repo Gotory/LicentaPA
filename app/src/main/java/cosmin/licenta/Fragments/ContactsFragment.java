@@ -72,8 +72,6 @@ public class ContactsFragment extends Fragment {
 
         mContactsList = new ArrayList<>();
         originalContactsList = new ArrayList<>();
-        mAdapter = new ContactsAdapter(mContext, R.layout.list_item_contact, mContactsList);
-        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -235,7 +233,8 @@ public class ContactsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String file_url) {
-            mAdapter.notifyDataSetChanged();
+            mAdapter = new ContactsAdapter(mContext, R.layout.list_item_contact, mContactsList);
+            mListView.setAdapter(mAdapter);
             if (pDialog != null && pDialog.isShowing()) {
                 pDialog.dismiss();
             }

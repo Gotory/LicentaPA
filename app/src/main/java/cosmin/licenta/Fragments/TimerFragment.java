@@ -2,6 +2,7 @@ package cosmin.licenta.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +19,9 @@ public class TimerFragment extends Fragment {
 
     private boolean started;
     private Timer timer;
-    private int sec, min, hr;
-    private TextView secView, minView, hrView;
+    private int sec, min;
+    private TextView secView, minView;
+    private String second, minute;
 
     public TimerFragment() {
     }
@@ -41,10 +43,8 @@ public class TimerFragment extends Fragment {
 
         secView = rootView.findViewById(R.id.textSec);
         minView = rootView.findViewById(R.id.textMin);
-        hrView = rootView.findViewById(R.id.textHour);
         sec = 0;
         min = 0;
-        hr = 0;
 
         rootView.findViewById(R.id.timer_layout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +74,6 @@ public class TimerFragment extends Fragment {
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    String second, minute, hour;
                     sec++;
                     if (sec == 59) {
                         min++;
@@ -82,10 +81,6 @@ public class TimerFragment extends Fragment {
                     }
                     if (min == 59) {
                         min = 0;
-                        hr++;
-                    }
-                    if (hr == 23) {
-                        hr = 0;
                     }
                     if (sec < 10) {
                         second = "0" + String.valueOf(sec);
@@ -93,25 +88,23 @@ public class TimerFragment extends Fragment {
                         second = String.valueOf(sec);
                     }
                     if (min < 10) {
-                        minute = "0" + String.valueOf(sec) + ":";
+                        minute = "0" + String.valueOf(min) + ":";
                     } else {
-                        minute = String.valueOf(sec) + ":";
+                        minute = String.valueOf(min) + ":";
                     }
-                    if (hr < 10) {
-                        hour = "0" + String.valueOf(sec) + ":";
-                    } else {
-                        hour = String.valueOf(sec) + ":";
-                    }
-                    secView.setText(second);
-                    minView.setText(minute);
-                    hrView.setText(hour);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            secView.setText(second);
+                            minView.setText(minute);
+                        }
+                    });
                 }
             }, 0, 1000);
         } else {
             started = false;
             sec = 0;
             min = 0;
-            hr = 0;
             timer.cancel();
             timer.purge();
         }

@@ -19,6 +19,9 @@ public class MyConstants {
     public static final String gps_tag = "GPS";
     public static final String calendar_tag = "Events";
     public static final String timer_tag = "Timer";
+    public static final String currency_tag = "Currency";
+
+    public static final String url = "http://www.bnro.ro/nbrfxrates.xml";
 
     public static final String prefsUser = "user";
     public static final String prefsLastCommand = "last_command";

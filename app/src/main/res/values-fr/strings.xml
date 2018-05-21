@@ -29,6 +29,7 @@
     <string name="drawer_gps">La navigation</string>
     <string name="drawer_reminder">Calendrier</string>
     <string name="drawer_timer">Minuteur</string>
+    <string name="drawer_currency">Taux de change</string>
     <string name="drawer_start_listener">Commencez à écouter les commandes</string>
     <string name="drawer_add_contact">Ajouter le contact</string>
     <string name="drawer_exit_app">Sortie</string>
@@ -51,5 +52,6 @@
     <string name="sms">sms</string>
     <string name="last_command">dernière commande</string>
     <string name="message">Quel message dois-je envoyer</string>
+    <string name="currency_type">Ron -> %1$s</string>
 
 </resources>
