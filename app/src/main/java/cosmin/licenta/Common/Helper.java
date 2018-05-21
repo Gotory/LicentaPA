@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.OperationApplicationException;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,7 +19,6 @@ import android.provider.CalendarContract;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
@@ -109,7 +107,7 @@ public class Helper {
                 activity.navView.getMenu().getItem(0).setChecked(true);
             } else if (currentFragment instanceof TimerFragment) {
                 activity.navView.getMenu().getItem(4).setChecked(true);
-            } else if (currentFragment instanceof CurrencyFragment){
+            } else if (currentFragment instanceof CurrencyFragment) {
                 activity.navView.getMenu().getItem(5).setChecked(true);
             }
         }
@@ -207,7 +205,7 @@ public class Helper {
                         if (params.get(MyConstants.paramsEdit).equals(MyConstants.FALSE)) {
                             Note note = new Note();
                             if (params.get(MyConstants.paramsTitle).isEmpty()) {
-                                note.setTitle(Calendar.getInstance().getTime().toString());
+                                note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
                             } else {
                                 note.setTitle(params.get(MyConstants.paramsTitle));
                             }

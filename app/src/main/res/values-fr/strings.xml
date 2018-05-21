@@ -53,5 +53,6 @@
     <string name="last_command">dernière commande</string>
     <string name="message">Quel message dois-je envoyer</string>
     <string name="currency_type">Ron -> %1$s</string>
+    <string name="event_added">Événement ajouté avec succès</string>
 
 </resources>

@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (getIntent().getAction().equals(MyConstants.actionNewNoteWidget)) {
             HashMap<String, String> params = new HashMap<>();
             params.put(MyConstants.paramsType, MyConstants.paramsNote);
+            params.put(MyConstants.paramsTitle, "");
             params.put(MyConstants.paramsEdit, MyConstants.FALSE);
             Helper.getInstance().showDialog(this, params);
         }

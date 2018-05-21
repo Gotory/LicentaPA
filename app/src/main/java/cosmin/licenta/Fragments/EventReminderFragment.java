@@ -93,6 +93,15 @@ public class EventReminderFragment extends Fragment {
                 params.put(MyConstants.eventEndMin, endTimeMin.getText().toString());
                 params.put(MyConstants.eventReminderMin, reminderTimeMin.getText().toString());
                 if (checkFields()) {
+                    titleET.setText("");
+                    descriptionET.setText("");
+                    startTimeHour.setText("");
+                    endTimeHour.setText("");
+                    reminderTimeHour.setText("");
+                    startTimeMin.setText("");
+                    endTimeMin.setText("");
+                    reminderTimeMin.setText("");
+                    Toast.makeText(mContext, getString(R.string.event_added), Toast.LENGTH_SHORT).show();
                     Helper.getInstance().checkSaveEvent(mContext, params, eventDate);
                 }
             }
@@ -103,20 +112,20 @@ public class EventReminderFragment extends Fragment {
     }
 
     private Boolean checkFields() {
-        if(descriptionET.getText().toString().isEmpty()){
+        if (descriptionET.getText().toString().isEmpty()) {
             params.put(MyConstants.eventDesc, "");
         }
-        if(endTimeHour.getText().toString().isEmpty() && !endTimeMin.getText().toString().isEmpty()){
+        if (endTimeHour.getText().toString().isEmpty() && !endTimeMin.getText().toString().isEmpty()) {
             params.put(MyConstants.eventEndHour, startTimeHour.getText().toString());
         }
-        if(endTimeHour.getText().toString().isEmpty() && endTimeMin.getText().toString().isEmpty()){
+        if (endTimeHour.getText().toString().isEmpty() && endTimeMin.getText().toString().isEmpty()) {
             params.put(MyConstants.eventEndHour, startTimeHour.getText().toString());
             params.put(MyConstants.eventEndMin, startTimeMin.getText().toString());
         }
-        if(reminderTimeHour.getText().toString().isEmpty()){
+        if (reminderTimeHour.getText().toString().isEmpty()) {
             params.put(MyConstants.eventReminderHour, "00");
         }
-        if(reminderTimeMin.getText().toString().isEmpty()){
+        if (reminderTimeMin.getText().toString().isEmpty()) {
             params.put(MyConstants.eventReminderMin, "00");
         }
         if (titleET.getText().toString().isEmpty() || startTimeHour.getText().toString().isEmpty() || startTimeMin.getText().toString().isEmpty()) {
