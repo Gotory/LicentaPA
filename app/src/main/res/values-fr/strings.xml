@@ -44,11 +44,11 @@
     <string name="gps_hint">Destination</string>
     <string name="toast_complete_fields">Remplissez tous les champs, s\'il vous plaît!</string>
     <string name="hello_user">Bonjour %1$s , que voulez-vous que je fasse</string>
-    <string name="hello_user_default">Bonjour utilisateur, avant de commencer, pourriez-vous me dire quel est votre nom</string>
-    <string name="user_set">Un plaisir de vous rencontrer %1$s que voulez-vous que je fasse</string>
+    <string name="hello_user_default">Bonjour utilisateur. Avant de commencer, pourriez-vous me dire quel est votre nom</string>
+    <string name="user_set">Un plaisir de vous rencontrer %1$s. Que voulez-vous que je fasse</string>
     <string name="to_who">Qui devrais-je %1$s</string>
     <string name="call">appel</string>
-    <string name="send_sms">envoyer des sms à</string>
+    <string name="send_sms">envoyer des message à</string>
     <string name="sms">sms</string>
     <string name="last_command">dernière commande</string>
     <string name="message">Quel message dois-je envoyer</string>

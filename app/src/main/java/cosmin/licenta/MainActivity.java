@@ -208,13 +208,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     for (String result : results) {
-                        if (result.toLowerCase().contains(getString(R.string.call))) {
+                        if (result.toLowerCase().contains(getString(R.string.call)) || result.toLowerCase().contains("dial")) {
                             commandList.add("call");
-                            drawerButtonActions(R.id.nav_contacts);
-                        } else if (result.toLowerCase().contains(getString(R.string.sms))) {
+                        }
+                        if (result.toLowerCase().contains(getString(R.string.sms)) || result.toLowerCase().contains("message")) {
                             commandList.add("sms");
-                            drawerButtonActions(R.id.nav_contacts);
-                        } else if (result.toLowerCase().contains(getString(R.string.last_command))) {
+                        }
+                        if (result.toLowerCase().contains("add contact")) {
+                            commandList.add("add contact");
+                        }
+                        if (result.toLowerCase().contains("exit") || result.toLowerCase().contains("log out") || result.toLowerCase().contains("close") || result.toLowerCase().contains("stop") || result.toLowerCase().contains("log off")) {
+                            drawerButtonActions(R.id.nav_log_out);
+                        }
+                        if (result.toLowerCase().contains("nothing")) {
+                            if (commandList.isEmpty()) {
+                                tts.speak("Why did you start me then", TextToSpeech.QUEUE_FLUSH, null);
+                            }
+                        }
+                        if (result.toLowerCase().contains("directions") || result.toLowerCase().contains("navigation") || result.toLowerCase().contains("rout") || result.toLowerCase().contains("gps")) {
+                            commandList.add("navigation");
+                            drawerButtonActions(R.id.nav_destination);
+                        }
+                        if (result.toLowerCase().contains("event") || result.toLowerCase().contains("reminder") || result.toLowerCase().contains("calendar")) {
+                            commandList.add("event");
+                            drawerButtonActions(R.id.nav_reminders);
+                        }
+                        if( result.toLowerCase().contains("currency") || result.toLowerCase().contains("exchange")){
+                            commandList.add("currency");
+                            drawerButtonActions(R.id.nav_currency);
+                        }
+                        if(result.toLowerCase().contains("timer")||result.toLowerCase().contains("alarm")){
+                            commandList.add("timer");
+                            drawerButtonActions(R.id.nav_timer);
+                        }
+                        if(result.toLowerCase().contains("note")||result.toLowerCase().contains("home")){
+                            commandList.add("home");
+                            drawerButtonActions(R.id.nav_home);
+                        }
+                        if(result.toLowerCase().contains("calculate")){
+                            commandList.add("calculate");
+                        }
+                        if(result.toLowerCase().contains(""))
+                        if (result.toLowerCase().contains(getString(R.string.last_command))) {
                             String lastCommand = prefs.getString(MyConstants.prefsLastCommand, "");
                             if (!lastCommand.isEmpty()) {
                                 commandList.add(lastCommand);
@@ -279,12 +314,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         switch (command) {
             case "call": {
+                drawerButtonActions(R.id.nav_contacts);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "call").apply();
                 tts.speak(getString(R.string.to_who, getString(R.string.call)), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
             case "sms": {
+                drawerButtonActions(R.id.nav_contacts);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "sms").apply();
                 tts.speak(getString(R.string.to_who, getString(R.string.send_sms)), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);

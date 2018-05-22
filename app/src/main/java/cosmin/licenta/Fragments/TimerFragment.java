@@ -64,6 +64,11 @@ public class TimerFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        started = false;
+        sec = 0;
+        min = 0;
+        timer.cancel();
+        timer.purge();
         super.onDetach();
     }
 
