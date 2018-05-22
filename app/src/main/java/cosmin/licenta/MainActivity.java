@@ -33,12 +33,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
 import cosmin.licenta.Common.Contact;
+import cosmin.licenta.Common.DBHelper;
 import cosmin.licenta.Common.Helper;
 import cosmin.licenta.Common.MyConstants;
+import cosmin.licenta.Common.Note;
 import cosmin.licenta.Fragments.ContactsFragment;
 import cosmin.licenta.Fragments.CurrencyFragment;
 import cosmin.licenta.Fragments.EventReminderFragment;
@@ -56,6 +59,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public Activity activity;
 
     public ArrayList<String> commandList;
+    private ArrayList<String> results;
+
+    private boolean first = true;
+
+    private String newContactName;
+    private HashMap<String, String> newEventData;
+    private HashMap<String, Integer> newEventDate;
 
     private FrameLayout appBase;
 
@@ -89,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+
+        results = new ArrayList<>();
 
         if (navView != null) {
             navView.getMenu().getItem(0).setChecked(true);
@@ -215,79 +227,123 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             commandList.add("sms");
                         }
                         if (result.toLowerCase().contains("add contact")) {
-                            commandList.add("add contact");
+                            commandList.add("add_contact");
                         }
                         if (result.toLowerCase().contains("exit") || result.toLowerCase().contains("log out") || result.toLowerCase().contains("close") || result.toLowerCase().contains("stop") || result.toLowerCase().contains("log off")) {
                             drawerButtonActions(R.id.nav_log_out);
                         }
                         if (result.toLowerCase().contains("nothing")) {
                             if (commandList.isEmpty()) {
-                                tts.speak("Why did you start me then", TextToSpeech.QUEUE_FLUSH, null);
+                                commandList.add("nothing");
                             }
                         }
                         if (result.toLowerCase().contains("directions") || result.toLowerCase().contains("navigation") || result.toLowerCase().contains("rout") || result.toLowerCase().contains("gps")) {
                             commandList.add("navigation");
-                            drawerButtonActions(R.id.nav_destination);
                         }
                         if (result.toLowerCase().contains("event") || result.toLowerCase().contains("reminder") || result.toLowerCase().contains("calendar")) {
                             commandList.add("event");
-                            drawerButtonActions(R.id.nav_reminders);
                         }
-                        if( result.toLowerCase().contains("currency") || result.toLowerCase().contains("exchange")){
-                            commandList.add("currency");
-                            drawerButtonActions(R.id.nav_currency);
-                        }
-                        if(result.toLowerCase().contains("timer")||result.toLowerCase().contains("alarm")){
+//                        if (result.toLowerCase().contains("currency") || result.toLowerCase().contains("exchange")) {
+//                            commandList.add("currency");
+//                        }
+                        if (result.toLowerCase().contains("timer") || result.toLowerCase().contains("chronometer")) {
                             commandList.add("timer");
-                            drawerButtonActions(R.id.nav_timer);
                         }
-                        if(result.toLowerCase().contains("note")||result.toLowerCase().contains("home")){
+                        if (result.toLowerCase().contains("alarm")) {
+                            commandList.add("alarm");
+                        }
+                        if (result.toLowerCase().contains("note") || result.toLowerCase().contains("home")) {
                             commandList.add("home");
-                            drawerButtonActions(R.id.nav_home);
                         }
-                        if(result.toLowerCase().contains("calculate")){
+                        if (result.toLowerCase().contains("calculate")) {
                             commandList.add("calculate");
                         }
-                        if(result.toLowerCase().contains(""))
-                        if (result.toLowerCase().contains(getString(R.string.last_command))) {
-                            String lastCommand = prefs.getString(MyConstants.prefsLastCommand, "");
-                            if (!lastCommand.isEmpty()) {
-                                commandList.add(lastCommand);
+                        if (result.toLowerCase().contains(""))
+                            if (result.toLowerCase().contains(getString(R.string.last_command))) {
+                                String lastCommand = prefs.getString(MyConstants.prefsLastCommand, "");
+                                if (!lastCommand.isEmpty()) {
+                                    commandList.add(lastCommand);
+                                }
                             }
-                        }
                     }
-                    makeNewCommand();
+                    if (commandList.isEmpty()) {
+                        tts.speak("You did not imput a command please try again", TextToSpeech.QUEUE_FLUSH, null);
+                    } else if (commandList.get(0).equals("nothing")) {
+                        tts.speak("Why did you start me then", TextToSpeech.QUEUE_FLUSH, null);
+                        commandList.clear();
+                    } else {
+                        makeNewCommand();
+                    }
                 }
                 break;
             }
             case MyConstants.REQ_CODE_ARGS: {
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    Log.d("+++", results.toString());
                     String command = commandList.get(0);
                     switch (command) {
                         case "call": {
-                            String result = results.get(0);
                             ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
-                            for (Contact contact : fragment.mContactsList) {
-                                if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
-                                    Helper.getInstance().callNumber(contact.getPhoneNumber(), this);
-                                    commandList.clear();
+                            if (first) {
+                                this.results = results;
+                                first = false;
+                            }
+                            String result = results.get(0);
+                            if (result.equals("no")) {
+                                this.results.remove(0);
+                            }
+                            if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
+                                String name = this.results.get(0);
+                                tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                            } else {
+                                if (this.results.isEmpty()) {
+                                    tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
+                                } else {
+                                    for (Contact contact : fragment.mContactsList) {
+                                        if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
+                                            Helper.getInstance().callNumber(contact.getPhoneNumber(), this);
+                                            commandList.clear();
+                                            first = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!first) {
+                                        first = true;
+                                        tts.speak("Sorry did not find the contact in your contact list", TextToSpeech.QUEUE_FLUSH, null);
+                                    }
                                 }
                             }
                             break;
                         }
                         case "sms": {
                             if (step == 0) {
-                                String result = results.get(0);
                                 ContactsFragment fragment = (ContactsFragment) getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
-                                for (Contact contact : fragment.mContactsList) {
-                                    if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
-                                        phone = contact.getPhoneNumber();
-                                        step++;
-                                        tts.speak(getString(R.string.message), TextToSpeech.QUEUE_FLUSH, null);
-                                        listenAfterDelay(2000, true, this);
-                                        break;
+                                if (first) {
+                                    this.results = results;
+                                    first = false;
+                                }
+                                String result = results.get(0);
+                                if (result.equals("no")) {
+                                    this.results.remove(0);
+                                }
+                                if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
+                                    String name = this.results.get(0);
+                                    tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
+                                    listenAfterDelay(2000, true, this);
+                                } else {
+                                    if (this.results.isEmpty()) {
+                                        tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
+                                    } else {
+                                        for (Contact contact : fragment.mContactsList) {
+                                            if (contact.getName().toLowerCase().equals(this.results.get(0).toLowerCase())) {
+                                                phone = contact.getPhoneNumber();
+                                                step++;
+                                                tts.speak(getString(R.string.message), TextToSpeech.QUEUE_FLUSH, null);
+                                                listenAfterDelay(2000, true, this);
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
                                 break;
@@ -296,8 +352,185 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Helper.getInstance().sendSMS(phone, result);
                                 step = 0;
                                 commandList.remove(0);
+                                first = true;
                                 makeNewCommand();
                             }
+                            break;
+                        }
+                        case "add_contact": {
+                            if (step == 0) {
+                                if (first) {
+                                    this.results = results;
+                                    first = false;
+                                }
+                                String result = results.get(0);
+                                if (result.equals("no")) {
+                                    this.results.remove(0);
+                                }
+                                if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
+                                    String name = this.results.get(0);
+                                    tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
+                                    listenAfterDelay(2000, true, this);
+                                } else {
+                                    if (this.results.isEmpty()) {
+                                        tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
+                                    } else {
+                                        newContactName = this.results.get(0).toLowerCase();
+                                        step++;
+                                        tts.speak("Now give me the phone number", TextToSpeech.QUEUE_FLUSH, null);
+                                        listenAfterDelay(2000, true, this);
+                                    }
+                                }
+                                break;
+                            } else if (step == 1) {
+                                String result = results.get(0);
+                                Helper.getInstance().addNewContact(this, newContactName, result);
+                                step = 0;
+                                commandList.remove(0);
+                                first = true;
+                                makeNewCommand();
+                            }
+                            break;
+                        }
+                        case "navigation": {
+//                            if (first) {
+//                                this.results = results;
+//                                first = false;
+//                            }
+                            String result = results.get(0);
+//                            if (result.equals("no")) {
+//                                this.results.remove(0);
+//                            }
+//                            if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
+//                                String name = this.results.get(0);
+//                                tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
+//                                listenAfterDelay(2000, true, this);
+//                            } else {
+//                                if (this.results.isEmpty()) {
+//                                    tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
+//                                } else {
+                            Helper.getInstance().startMaps(this, result);
+                            commandList.clear();
+//                                }
+//                            }
+                            break;
+                        }
+                        case "event": {
+                            if (step == 0) {
+                                newEventData.put(MyConstants.eventName, results.get(0));
+                                step++;
+                                tts.speak("Do you want a description", TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                                break;
+                            } else if (step == 1) {
+                                String result = results.get(0);
+                                if (result.equals("no")) {
+                                    tts.speak("Specify start time", TextToSpeech.QUEUE_FLUSH, null);
+                                    step += 2;
+                                    newEventData.put(MyConstants.eventDesc, "");
+                                    listenAfterDelay(2000, true, this);
+                                } else if (result.equals("yes")) {
+                                    newEventData.put(MyConstants.eventDesc, results.get(0));
+                                    step++;
+                                    tts.speak("OK. What is it", TextToSpeech.QUEUE_FLUSH, null);
+                                    listenAfterDelay(2000, true, this);
+                                }
+                            } else if (step == 2) {
+                                String result = results.get(0);
+                                if (newEventData.get(MyConstants.eventDesc).equals("yes")) {
+                                    newEventData.put(MyConstants.eventDesc, result);
+                                    tts.speak("Specify start time", TextToSpeech.QUEUE_FLUSH, null);
+                                    step++;
+                                    listenAfterDelay(2000, true, this);
+                                }
+                            } else if (step == 3) {
+                                String result = results.get(0);
+                                Log.d("+++", results.toString());
+                                //todo split hour and minute
+//                                newEvent.put(MyConstants.eventStartHour, result);
+                                step++;
+                                tts.speak("Specify end time", TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                            } else if (step == 4) {
+                                String result = results.get(0);
+                                Log.d("+++", results.toString());
+                                //todo split hour and minute
+//                                newEvent.put(MyConstants.eventEndHour, result);
+                                step++;
+                                tts.speak("Do you want a reminder?", TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                            } else if (step == 5) {
+                                String result = results.get(0);
+                                if (result.equals("no")) {
+                                    tts.speak("In what day", TextToSpeech.QUEUE_FLUSH, null);
+                                    step += 2;
+                                    newEventData.put(MyConstants.eventDesc, "");
+                                    listenAfterDelay(2000, true, this);
+                                } else if (result.equals("yes")) {
+                                    newEventData.put(MyConstants.eventDesc, results.get(0));
+                                    step++;
+                                    tts.speak("OK. What is it", TextToSpeech.QUEUE_FLUSH, null);
+                                    listenAfterDelay(2000, true, this);
+                                }
+                            } else if (step == 6) {
+                                String result = results.get(0);
+                                Log.d("+++", results.toString());
+                                //todo split hour and minute
+//                                newEvent.put(MyConstants.eventReminderHour, result);
+                                step++;
+                                tts.speak("In what day", TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                            } else if (step == 7) {
+                                //todo make sure it's a year
+                                String result = results.get(0);
+                                Log.d("+++", results.toString());
+                                newEventDate.put(MyConstants.eventDay, Integer.valueOf(result));
+                                step++;
+                                tts.speak("In what month", TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                            } else if (step == 8) {
+                                String result = results.get(0);
+                                Log.d("+++", results.toString());
+                                newEventDate.put(MyConstants.eventMonth, Integer.valueOf(result));
+                                step++;
+                                tts.speak("In what year", TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                            } else if (step == 9) {
+                                String result = results.get(0);
+                                Log.d("+++", results.toString());
+                                newEventDate.put(MyConstants.eventYear, Integer.valueOf(result));
+                                Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
+                                step = 0;
+                                commandList.remove(0);
+                                makeNewCommand();
+                            }
+                            break;
+                        }
+                        case "home": {
+                            String result = results.get(0);
+                            Note note = new Note();
+                            note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
+                            note.setNote(result);
+                            new DBHelper(this).addNote(note);
+                            commandList.clear();
+                            break;
+                        }
+                        case "alarm": {
+                            String result = results.get(0);
+                            Note note = new Note();
+                            note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
+                            note.setNote(result);
+                            new DBHelper(this).addNote(note);
+                            commandList.clear();
+                            break;
+                        }
+                        case "calculat": {
+                            String result = results.get(0);
+                            Note note = new Note();
+                            note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
+                            note.setNote(result);
+                            new DBHelper(this).addNote(note);
+                            commandList.clear();
                             break;
                         }
                     }
@@ -324,6 +557,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawerButtonActions(R.id.nav_contacts);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "sms").apply();
                 tts.speak(getString(R.string.to_who, getString(R.string.send_sms)), TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
+                break;
+            }
+            case "add_contact": {
+                prefs.edit().putString(MyConstants.prefsLastCommand, "add_contact").apply();
+                tts.speak("please specify contact name", TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
+                break;
+            }
+            case "navigation": {
+                drawerButtonActions(R.id.nav_destination);
+                prefs.edit().putString(MyConstants.prefsLastCommand, "navigation").apply();
+                tts.speak("Please specify destination", TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
+                break;
+            }
+            case "event": {
+                drawerButtonActions(R.id.nav_reminders);
+                prefs.edit().putString(MyConstants.prefsLastCommand, "event").apply();
+                tts.speak("Please specify event name", TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
+                break;
+            }
+//            case "currency": {
+//                drawerButtonActions(R.id.nav_currency);
+//                prefs.edit().putString(MyConstants.prefsLastCommand, "currency").apply();
+//                tts.speak("Please specify currency", TextToSpeech.QUEUE_FLUSH, null);
+//                listenAfterDelay(2000, true, this);
+//                break;
+//            }
+            case "timer": {
+                drawerButtonActions(R.id.nav_timer);
+                TimerFragment fragment = (TimerFragment) getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                fragment.startTimer();
+                prefs.edit().putString(MyConstants.prefsLastCommand, "timer").apply();
+                tts.speak("Timer started", TextToSpeech.QUEUE_FLUSH, null);
+                break;
+            }
+            case "alarm": {
+                prefs.edit().putString(MyConstants.prefsLastCommand, "alarm").apply();
+                tts.speak("Please specify alarm time", TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
+                break;
+            }
+            case "home": {
+                drawerButtonActions(R.id.nav_home);
+                prefs.edit().putString(MyConstants.prefsLastCommand, "home").apply();
+                tts.speak("Please specify note text", TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
+                break;
+            }
+            case "calculate": {
+                drawerButtonActions(R.id.nav_home);
+                prefs.edit().putString(MyConstants.prefsLastCommand, "calculate").apply();
+                tts.speak("Please specify expression", TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }

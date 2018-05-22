@@ -119,6 +119,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //todo update damn widget.
+
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

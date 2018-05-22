@@ -43,6 +43,8 @@ import cosmin.licenta.Fragments.TimerFragment;
 import cosmin.licenta.MainActivity;
 import cosmin.licenta.R;
 
+import static android.net.Uri.parse;
+
 public class Helper {
 
     private static Helper INSTANCE;
@@ -252,7 +254,7 @@ public class Helper {
         builder.show();
     }
 
-    private void addNewContact(Context context, String name, String number) {
+    public void addNewContact(Context context, String name, String number) {
         ArrayList<ContentProviderOperation> operations = new ArrayList<>();
 
         operations.add(ContentProviderOperation.newInsert(
@@ -357,5 +359,13 @@ public class Helper {
             return;
         }
         context.getContentResolver().insert(CalendarContract.Reminders.CONTENT_URI, contentValues);
+    }
+
+    public void startMaps(Context context, String destination){
+        destination = destination.replaceAll(" ", "+");
+        Uri gmmIntentUri = parse("google.navigation:q=" + destination);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        context.startActivity(mapIntent);
     }
 }

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import cosmin.licenta.Adapters.GPSAdapter;
 import cosmin.licenta.Common.DBHelper;
+import cosmin.licenta.Common.Helper;
 import cosmin.licenta.R;
 
 import static android.net.Uri.parse;
@@ -72,10 +73,7 @@ public class GpsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String destination = mAdapter.getItem(position);
                 destination = destination.replaceAll(" ", "+");
-                Uri gmmIntentUri = parse("google.navigation:q=" + destination);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
+                Helper.getInstance().startMaps(mContext,destination);
             }
         });
 
@@ -91,10 +89,7 @@ public class GpsFragment extends Fragment {
                         new DBHelper(mContext).addDest(destination);
                     }
                     destination = destination.replaceAll(" ", "+");
-                    Uri gmmIntentUri = parse("google.navigation:q=" + destination);
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    startActivity(mapIntent);
+                    Helper.getInstance().startMaps(mContext,destination);
                 }
             }
         });

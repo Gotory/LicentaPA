@@ -61,8 +61,6 @@ public class AnswerCallsActivity extends Activity {
             }
         };
 
-        //todo - add to intent a variable to check if it needs to listen for commands 
-
         registerReceiver(finishActivityReceiver, filter);
 
         String number = getIntent().getExtras().getString(MyConstants.intent_incoming_number);

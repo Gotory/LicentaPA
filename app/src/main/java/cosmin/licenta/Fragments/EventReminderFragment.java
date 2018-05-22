@@ -66,6 +66,12 @@ public class EventReminderFragment extends Fragment {
         eventDate = new HashMap<>();
 
         Date date = Calendar.getInstance().getTime();
+        startTimeHour.setText(DateFormat.format("hh", date));
+        startTimeMin.setText(DateFormat.format("mm", date));
+        endTimeHour.setText(DateFormat.format("hh", date));
+        endTimeMin.setText(DateFormat.format("mm", date));
+        reminderTimeHour.setText("00");
+        reminderTimeMin.setText("00");
         eventDate.put(MyConstants.eventDay, Integer.valueOf((String) DateFormat.format("dd", date)));
         eventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", date)));
         eventDate.put(MyConstants.eventYear, Integer.valueOf((String) DateFormat.format("yyyy", date)));
