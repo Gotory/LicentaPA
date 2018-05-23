@@ -68,8 +68,6 @@ public class Helper {
         return enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName);
     }
 
-    //todo add functions for the voice commands
-
     public void promptSpeechInput(MainActivity activity) {
         activity.commandList.clear();
 

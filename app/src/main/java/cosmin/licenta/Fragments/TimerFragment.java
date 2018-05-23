@@ -2,7 +2,6 @@ package cosmin.licenta.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +48,11 @@ public class TimerFragment extends Fragment {
         rootView.findViewById(R.id.timer_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startTimer();
+                if (!started) {
+                    startTimer();
+                } else {
+                    stopTimer();
+                }
             }
         });
 
@@ -64,54 +67,50 @@ public class TimerFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        stopTimer();
+        super.onDetach();
+    }
+
+    public void startTimer() {
+        started = true;
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                sec++;
+                if (sec == 59) {
+                    min++;
+                    sec = 0;
+                }
+                if (min == 59) {
+                    min = 0;
+                }
+                if (sec < 10) {
+                    second = "0" + String.valueOf(sec);
+                } else {
+                    second = String.valueOf(sec);
+                }
+                if (min < 10) {
+                    minute = "0" + String.valueOf(min) + ":";
+                } else {
+                    minute = String.valueOf(min) + ":";
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        secView.setText(second);
+                        minView.setText(minute);
+                    }
+                });
+            }
+        }, 0, 1000);
+    }
+
+    public void stopTimer() {
         started = false;
         sec = 0;
         min = 0;
         timer.cancel();
         timer.purge();
-        super.onDetach();
-    }
-
-    public void startTimer(){
-        if (!started) {
-            started = true;
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    sec++;
-                    if (sec == 59) {
-                        min++;
-                        sec = 0;
-                    }
-                    if (min == 59) {
-                        min = 0;
-                    }
-                    if (sec < 10) {
-                        second = "0" + String.valueOf(sec);
-                    } else {
-                        second = String.valueOf(sec);
-                    }
-                    if (min < 10) {
-                        minute = "0" + String.valueOf(min) + ":";
-                    } else {
-                        minute = String.valueOf(min) + ":";
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            secView.setText(second);
-                            minView.setText(minute);
-                        }
-                    });
-                }
-            }, 0, 1000);
-        } else {
-            started = false;
-            sec = 0;
-            min = 0;
-            timer.cancel();
-            timer.purge();
-        }
     }
 }

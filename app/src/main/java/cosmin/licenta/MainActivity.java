@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (result.toLowerCase().contains("add contact")) {
                             commandList.add("add_contact");
                         }
-                        if (result.toLowerCase().contains("exit") || result.toLowerCase().contains("log out") || result.toLowerCase().contains("close") || result.toLowerCase().contains("stop") || result.toLowerCase().contains("log off")) {
+                        if (result.toLowerCase().contains("exit") || result.toLowerCase().contains("log out") || result.toLowerCase().contains("close") || result.toLowerCase().contains("stop app") || result.toLowerCase().contains("log off")) {
                             drawerButtonActions(R.id.nav_log_out);
                         }
                         if (result.toLowerCase().contains("nothing")) {
@@ -248,6 +248,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                        }
                         if (result.toLowerCase().contains("timer") || result.toLowerCase().contains("chronometer")) {
                             commandList.add("timer");
+                        }
+                        if (result.toLowerCase().contains("reset") || result.equals("stop timer")) {
+                            commandList.add("reset");
+                        }
+                        if (result.toLowerCase().contains("clear notes") || result.toLowerCase().contains("delete notes")) {
+                            commandList.add("delete_notes");
+                        }
+                        if (result.toLowerCase().contains("clear routes") || result.toLowerCase().contains("delete gps information")) {
+                            commandList.add("delete_gps");
+                        }
+                        if (result.toLowerCase().contains("change name") || result.toLowerCase().contains("modify username") || result.toLowerCase().contains("change username") || result.toLowerCase().contains("modify name")) {
+                            commandList.add("change_user");
                         }
                         if (result.toLowerCase().contains("alarm")) {
                             commandList.add("alarm");
@@ -393,26 +405,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             break;
                         }
                         case "navigation": {
-//                            if (first) {
-//                                this.results = results;
-//                                first = false;
-//                            }
                             String result = results.get(0);
-//                            if (result.equals("no")) {
-//                                this.results.remove(0);
-//                            }
-//                            if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
-//                                String name = this.results.get(0);
-//                                tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
-//                                listenAfterDelay(2000, true, this);
-//                            } else {
-//                                if (this.results.isEmpty()) {
-//                                    tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
-//                                } else {
                             Helper.getInstance().startMaps(this, result);
                             commandList.clear();
-//                                }
-//                            }
+                            makeNewCommand();
                             break;
                         }
                         case "event": {
@@ -512,25 +508,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
                             note.setNote(result);
                             new DBHelper(this).addNote(note);
-                            commandList.clear();
+                            commandList.remove(0);
+                            makeNewCommand();
+                            break;
+                        }
+                        case "change_user": {
+                            String result = results.get(0);
+                            prefs.edit().putString(MyConstants.prefsUser, result).apply();
+                            commandList.remove(0);
+                            makeNewCommand();
                             break;
                         }
                         case "alarm": {
+                            //todo
                             String result = results.get(0);
                             Note note = new Note();
                             note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
                             note.setNote(result);
                             new DBHelper(this).addNote(note);
-                            commandList.clear();
+                            commandList.remove(0);
                             break;
                         }
-                        case "calculat": {
+                        case "calculate": {
+                            //todo - parse command better
                             String result = results.get(0);
-                            Note note = new Note();
-                            note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
-                            note.setNote(result);
-                            new DBHelper(this).addNote(note);
-                            commandList.clear();
+                            tts.speak(String.valueOf(eval(result)), TextToSpeech.QUEUE_FLUSH, null);
+                            commandList.remove(0);
+                            makeNewCommand();
                             break;
                         }
                     }
@@ -593,6 +597,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment.startTimer();
                 prefs.edit().putString(MyConstants.prefsLastCommand, "timer").apply();
                 tts.speak("Timer started", TextToSpeech.QUEUE_FLUSH, null);
+                break;
+            }
+            case "reset": {
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                if (fragment instanceof TimerFragment) {
+                    TimerFragment timerFrag = (TimerFragment) fragment;
+                    timerFrag.stopTimer();
+                    tts.speak("Timer reset", TextToSpeech.QUEUE_FLUSH, null);
+                }
+                break;
+            }
+            case "delete_notes": {
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                if (fragment instanceof HomeFragment) {
+                    HomeFragment homeFrag = (HomeFragment) fragment;
+                    new DBHelper(this).deleteAllNotes();
+                    homeFrag.mNoteList.clear();
+                    homeFrag.mAdapter.notifyDataSetChanged();
+                    prefs.edit().putString(MyConstants.prefsLastCommand, "delete_notes").apply();
+                    tts.speak("Notes deleted", TextToSpeech.QUEUE_FLUSH, null);
+                }
+                break;
+            }
+            case "delete_gps": {
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                if (fragment instanceof GpsFragment) {
+                    GpsFragment gpsFrag = (GpsFragment) fragment;
+                    new DBHelper(this).deleteAllDestinations();
+                    gpsFrag.mDestinationList.clear();
+                    gpsFrag.mAdapter.notifyDataSetChanged();
+                    prefs.edit().putString(MyConstants.prefsLastCommand, "delete_gps").apply();
+                    tts.speak("Destinations cleared", TextToSpeech.QUEUE_FLUSH, null);
+                }
+                break;
+            }
+            case "change_user": {
+                prefs.edit().putString(MyConstants.prefsLastCommand, "change_user").apply();
+                tts.speak("OK. How do you want me to call you", TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
                 break;
             }
             case "alarm": {
@@ -764,6 +807,91 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         builder.show();
+    }
+
+    private double eval(final String str) {
+        return new Object() {
+            int pos = -1, ch;
+
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+
+            boolean eat(int charToEat) {
+                while (ch == ' ') nextChar();
+                if (ch == charToEat) {
+                    nextChar();
+                    return true;
+                }
+                return false;
+            }
+
+            double parse() {
+                nextChar();
+                double x = parseExpression();
+                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char) ch);
+                return x;
+            }
+
+            double parseExpression() {
+                double x = parseTerm();
+                for (; ; ) {
+                    if (eat('+')) x += parseTerm();
+                    else if (eat('-')) x -= parseTerm();
+                    else return x;
+                }
+            }
+
+            double parseTerm() {
+                double x = parseFactor();
+                for (; ; ) {
+                    if (eat('*')) x *= parseFactor();
+                    else if (eat('/')) x /= parseFactor();
+                    else return x;
+                }
+            }
+
+            double parseFactor() {
+                if (eat('+')) return parseFactor();
+                if (eat('-')) return -parseFactor();
+
+                double x;
+                int startPos = this.pos;
+                if (eat('(')) {
+                    x = parseExpression();
+                    eat(')');
+                } else if ((ch >= '0' && ch <= '9') || ch == '.') {
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                } else if (ch >= 'a' && ch <= 'z') {
+                    while (ch >= 'a' && ch <= 'z') nextChar();
+                    String func = str.substring(startPos, this.pos);
+                    x = parseFactor();
+                    switch (func) {
+                        case "sqrt":
+                            x = Math.sqrt(x);
+                            break;
+                        case "sin":
+                            x = Math.sin(Math.toRadians(x));
+                            break;
+                        case "cos":
+                            x = Math.cos(Math.toRadians(x));
+                            break;
+                        case "tan":
+                            x = Math.tan(Math.toRadians(x));
+                            break;
+                        default:
+                            throw new RuntimeException("Unknown function: " + func);
+                    }
+                } else {
+                    throw new RuntimeException("Unexpected: " + (char) ch);
+                }
+
+                if (eat('^')) x = Math.pow(x, parseFactor());
+
+                return x;
+            }
+        }.parse();
     }
 
     private class MyPhoneStateListener extends PhoneStateListener {

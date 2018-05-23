@@ -85,6 +85,12 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteAllDestinations() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_GPS, null, null);
+        db.close();
+    }
+
     public void addNote(Note note) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -130,6 +136,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public void deleteNote(String title) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NOTES, NOTES_COLUMN_NOTE_TITLE + "=?", new String[]{title});
+        db.close();
+    }
+
+    public void deleteAllNotes() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NOTES, null, null);
         db.close();
     }
 
