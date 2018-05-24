@@ -22,6 +22,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -113,6 +114,91 @@ public class Helper {
         }
     }
 
+    public double eval(final String str) {
+        return new Object() {
+            int pos = -1, ch;
+
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+
+            boolean eat(int charToEat) {
+                while (ch == ' ') nextChar();
+                if (ch == charToEat) {
+                    nextChar();
+                    return true;
+                }
+                return false;
+            }
+
+            double parse() {
+                nextChar();
+                double x = parseExpression();
+                if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char) ch);
+                return x;
+            }
+
+            double parseExpression() {
+                double x = parseTerm();
+                for (; ; ) {
+                    if (eat('+')) x += parseTerm();
+                    else if (eat('-')) x -= parseTerm();
+                    else return x;
+                }
+            }
+
+            double parseTerm() {
+                double x = parseFactor();
+                for (; ; ) {
+                    if (eat('*')) x *= parseFactor();
+                    else if (eat('/')) x /= parseFactor();
+                    else return x;
+                }
+            }
+
+            double parseFactor() {
+                if (eat('+')) return parseFactor();
+                if (eat('-')) return -parseFactor();
+
+                double x;
+                int startPos = this.pos;
+                if (eat('(')) {
+                    x = parseExpression();
+                    eat(')');
+                } else if ((ch >= '0' && ch <= '9') || ch == '.') {
+                    while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
+                    x = Double.parseDouble(str.substring(startPos, this.pos));
+                } else if (ch >= 'a' && ch <= 'z') {
+                    while (ch >= 'a' && ch <= 'z') nextChar();
+                    String func = str.substring(startPos, this.pos);
+                    x = parseFactor();
+                    switch (func) {
+                        case "sqrt":
+                            x = Math.sqrt(x);
+                            break;
+                        case "sin":
+                            x = Math.sin(Math.toRadians(x));
+                            break;
+                        case "cos":
+                            x = Math.cos(Math.toRadians(x));
+                            break;
+                        case "tan":
+                            x = Math.tan(Math.toRadians(x));
+                            break;
+                        default:
+                            throw new RuntimeException("Unknown function: " + func);
+                    }
+                } else {
+                    throw new RuntimeException("Unexpected: " + (char) ch);
+                }
+
+                if (eat('^')) x = Math.pow(x, parseFactor());
+
+                return x;
+            }
+        }.parse();
+    }
+
     public void callNumber(final String number, final Context context) {
         // delay the call so that the user can cancel the call
         new Handler().post(new Runnable() {
@@ -173,35 +259,31 @@ public class Helper {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         switch (params.get(MyConstants.paramsType)) {
             case MyConstants.paramsSMS: {
-                final EditText input = new EditText(context);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                builder.setView(input);
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View view = inflater.inflate(R.layout.one_et_dialog, null);
+                builder.setView(view);
                 builder.setTitle(R.string.sms_dialog_title);
                 builder.setMessage(R.string.sms_dialog_text);
                 builder.setPositiveButton(R.string.general_dialog_send, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (!input.getText().toString().isEmpty())
-                            sendSMS(params.get(MyConstants.paramsAddress), input.getText().toString());
+                        EditText smsText = view.findViewById(R.id.dialog_data);
+                        if (!smsText.getText().toString().isEmpty())
+                            sendSMS(params.get(MyConstants.paramsAddress), smsText.getText().toString());
                     }
                 });
                 break;
             }
             case MyConstants.paramsNote: {
-                final EditText input = new EditText(context);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                builder.setView(input);
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View view = inflater.inflate(R.layout.one_et_dialog, null);
+                builder.setView(view);
                 builder.setTitle(R.string.note_dialog_title);
                 builder.setMessage(R.string.note_dialog_text);
                 builder.setPositiveButton(R.string.general_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        EditText noteText = view.findViewById(R.id.dialog_data);
                         if (params.get(MyConstants.paramsEdit).equals(MyConstants.FALSE)) {
                             Note note = new Note();
                             if (params.get(MyConstants.paramsTitle).isEmpty()) {
@@ -209,13 +291,13 @@ public class Helper {
                             } else {
                                 note.setTitle(params.get(MyConstants.paramsTitle));
                             }
-                            if (!input.getText().toString().isEmpty()) {
-                                note.setNote(input.getText().toString());
+                            if (!noteText.getText().toString().isEmpty()) {
+                                note.setNote(noteText.getText().toString());
                                 new DBHelper(context).addNote(note);
                             }
                         } else {
-                            if (!input.getText().toString().isEmpty()) {
-                                new DBHelper(context).editNote(params.get(MyConstants.paramsTitle), input.getText().toString());
+                            if (!noteText.getText().toString().isEmpty()) {
+                                new DBHelper(context).editNote(params.get(MyConstants.paramsTitle), noteText.getText().toString());
                             }
                         }
                         Intent intent = new Intent(MyConstants.actionNewNote);

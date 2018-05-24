@@ -107,10 +107,12 @@ public class TimerFragment extends Fragment {
     }
 
     public void stopTimer() {
-        started = false;
-        sec = 0;
-        min = 0;
-        timer.cancel();
-        timer.purge();
+        if(timer!=null) {
+            started = false;
+            sec = 0;
+            min = 0;
+            timer.cancel();
+            timer.purge();
+        }
     }
 }

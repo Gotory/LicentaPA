@@ -191,10 +191,10 @@ public class ContactsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(mContext);
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
+//            pDialog = new ProgressDialog(mContext);
+//            pDialog.setIndeterminate(false);
+//            pDialog.setCancelable(false);
+//            pDialog.show();
         }
 
         @Override
@@ -235,9 +235,9 @@ public class ContactsFragment extends Fragment {
         protected void onPostExecute(String file_url) {
             mAdapter = new ContactsAdapter(mContext, R.layout.list_item_contact, mContactsList);
             mListView.setAdapter(mAdapter);
-            if (pDialog != null && pDialog.isShowing()) {
-                pDialog.dismiss();
-            }
+//            if (pDialog != null && pDialog.isShowing()) {
+//                pDialog.dismiss();
+//            }
         }
     }
 }

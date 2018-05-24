@@ -33,6 +33,8 @@ public class EventReminderFragment extends Fragment {
     private HashMap<String, String> params;
     private HashMap<String, Integer> eventDate;
 
+    private Date currentTime;
+
     public EventReminderFragment() {
     }
 
@@ -65,16 +67,17 @@ public class EventReminderFragment extends Fragment {
         params = new HashMap<>();
         eventDate = new HashMap<>();
 
-        Date date = Calendar.getInstance().getTime();
-        startTimeHour.setText(DateFormat.format("hh", date));
-        startTimeMin.setText(DateFormat.format("mm", date));
-        endTimeHour.setText(DateFormat.format("hh", date));
-        endTimeMin.setText(DateFormat.format("mm", date));
+
+        currentTime = Calendar.getInstance().getTime();
+        startTimeHour.setText(DateFormat.format("kk ", currentTime));
+        startTimeMin.setText(DateFormat.format("mm", currentTime));
+        endTimeHour.setText(DateFormat.format("kk ", currentTime));
+        endTimeMin.setText(DateFormat.format("mm", currentTime));
         reminderTimeHour.setText("00");
         reminderTimeMin.setText("00");
-        eventDate.put(MyConstants.eventDay, Integer.valueOf((String) DateFormat.format("dd", date)));
-        eventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", date)));
-        eventDate.put(MyConstants.eventYear, Integer.valueOf((String) DateFormat.format("yyyy", date)));
+        eventDate.put(MyConstants.eventDay, Integer.valueOf((String) DateFormat.format("dd", currentTime)));
+        eventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", currentTime)));
+        eventDate.put(MyConstants.eventYear, Integer.valueOf((String) DateFormat.format("yyyy", currentTime)));
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -127,6 +130,26 @@ public class EventReminderFragment extends Fragment {
         if (endTimeHour.getText().toString().isEmpty() && endTimeMin.getText().toString().isEmpty()) {
             params.put(MyConstants.eventEndHour, startTimeHour.getText().toString());
             params.put(MyConstants.eventEndMin, startTimeMin.getText().toString());
+        }
+        if(){
+
+        } else {
+            if (Integer.valueOf(startTimeHour.getText().toString()) < Integer.valueOf((String) DateFormat.format("kk", currentTime))) {
+                startTimeHour.setText(DateFormat.format("kk", currentTime));
+                params.put(MyConstants.eventStartHour, (String) DateFormat.format("kk", currentTime));
+            }
+            if (startTimeHour.getText().equals(DateFormat.format("kk", currentTime)) && Integer.valueOf(startTimeMin.getText().toString()) < Integer.valueOf((String) DateFormat.format("mm", currentTime))) {
+                startTimeMin.setText(DateFormat.format("mm", currentTime));
+                params.put(MyConstants.eventStartMin, (String) DateFormat.format("mm", currentTime));
+            }
+            if (Integer.valueOf(endTimeHour.getText().toString()) < Integer.valueOf(startTimeHour.getText().toString())) {
+                endTimeHour.setText(startTimeHour.getText().toString());
+                params.put(MyConstants.eventEndHour, startTimeHour.getText().toString());
+            }
+            if (endTimeHour.getText().equals(startTimeHour.getText()) && Integer.valueOf(endTimeMin.getText().toString()) < Integer.valueOf(startTimeMin.getText().toString())) {
+                endTimeMin.setText(startTimeMin.getText().toString());
+                params.put(MyConstants.eventEndMin, startTimeMin.getText().toString());
+            }
         }
         if (reminderTimeHour.getText().toString().isEmpty()) {
             params.put(MyConstants.eventReminderHour, "00");
