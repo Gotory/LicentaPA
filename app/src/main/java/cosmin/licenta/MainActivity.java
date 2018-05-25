@@ -3,7 +3,9 @@ package cosmin.licenta;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,6 +50,7 @@ import cosmin.licenta.Fragments.EventReminderFragment;
 import cosmin.licenta.Fragments.GpsFragment;
 import cosmin.licenta.Fragments.HomeFragment;
 import cosmin.licenta.Fragments.TimerFragment;
+import cosmin.licenta.Receivers.AlarmReceiver;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -480,22 +483,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 //todo make sure it's a year
                                 String result = results.get(0);
                                 Log.d("+++", results.toString());
-                                newEventDate.put(MyConstants.eventDay, Integer.valueOf(result));
+//                                newEventDate.put(MyConstants.eventDay, Integer.valueOf(result));
                                 step++;
                                 tts.speak("In what month", TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 8) {
                                 String result = results.get(0);
                                 Log.d("+++", results.toString());
-                                newEventDate.put(MyConstants.eventMonth, Integer.valueOf(result));
+//                                newEventDate.put(MyConstants.eventMonth, Integer.valueOf(result));
                                 step++;
                                 tts.speak("In what year", TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 9) {
                                 String result = results.get(0);
                                 Log.d("+++", results.toString());
-                                newEventDate.put(MyConstants.eventYear, Integer.valueOf(result));
-                                Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
+//                                newEventDate.put(MyConstants.eventYear, Integer.valueOf(result));
+//                                Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
                                 step = 0;
                                 commandList.remove(0);
                                 makeNewCommand();
@@ -522,15 +525,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         case "alarm": {
                             //todo
                             String result = results.get(0);
-                            Note note = new Note();
-                            note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
-                            note.setNote(result);
-                            new DBHelper(this).addNote(note);
+                            Log.d("+++", results.toString());
+
+//                            Calendar alarmHour = Calendar.getInstance();
+
+//                            alarmHour.set(Calendar.HOUR_OF_DAY, result);
+//                            alarmHour.set(Calendar.MINUTE, result);
+//                            alarmHour.set(Calendar.SECOND, 0);
+//                            alarmHour.set(Calendar.MILLISECOND, 0);
+//                            Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+//                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 1, intent, 0);
+//                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//                            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmHour.getTimeInMillis(), pendingIntent);
                             commandList.remove(0);
+                            makeNewCommand();
                             break;
                         }
                         case "calculate": {
                             //todo - parse command better
+                            Log.d("+++", results.toString());
                             String result = results.get(0);
                             tts.speak(String.valueOf(Helper.getInstance().eval(result)), TextToSpeech.QUEUE_FLUSH, null);
                             commandList.remove(0);

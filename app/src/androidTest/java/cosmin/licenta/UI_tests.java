@@ -2,10 +2,13 @@ package cosmin.licenta;
 
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
+import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.Gravity;
+import android.widget.CalendarView;
 
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +21,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
@@ -93,7 +97,9 @@ public class UI_tests {
 
             onData(anything()).inAdapterView(withId(R.id.contacts_list)).atPosition(0).perform(click());
 
-            onView(withId(R.id.call_button)).check(matches(isDisplayed()));
+            onView(withId(R.id.call_button)).perform(click());
+
+            onView(withId(R.id.decline_Btn)).perform(click());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,6 +142,8 @@ public class UI_tests {
     public void testCase5() {
         try {
             onView(withId(R.id.add_note)).perform(click());
+
+            onView(withId(R.id.title_et)).perform(typeText("test title"));
 
             onView(withId(R.id.dialog_data)).perform(typeText("test"));
 
@@ -191,7 +199,7 @@ public class UI_tests {
 
             onView(withId(R.id.timer_layout)).perform(click());
 
-            Thread.sleep(10000);
+            Thread.sleep(5000);
 
             onView(withId(R.id.timer_layout)).perform(click());
 
@@ -217,7 +225,8 @@ public class UI_tests {
             onView(withId(R.id.end_time_minute)).perform(typeText("55"));
             onView(withId(R.id.reminder_time_hour)).perform(typeText("00"));
             onView(withId(R.id.reminder_time_minute)).perform(typeText("05"));
-            onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, monthOfYear, dayOfMonth));
+            onView(withClassName(Matchers.equalTo(CalendarView.class.getName()))).perform(PickerActions.setDate(2018, 6, 5));
+            onView(withId(R.id.add_event)).perform(click());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,9 +270,38 @@ public class UI_tests {
         try {
             onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(longClick());
 
+            onView(withId(R.id.dialog_data)).perform(typeText("new test"));
+
+            onView(withId(android.R.id.button1)).perform(click());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Test
+    public void testCase13() {
+        try {
+            onView(withId(R.id.add_note)).perform(click());
+
+            onView(withId(R.id.dialog_data)).perform(typeText("test"));
+
+            onView(withId(android.R.id.button1)).perform(click());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCase14() {
+        try {
+            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(click());
+
+            onView(withId(R.id.delete_btn)).perform(click());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
