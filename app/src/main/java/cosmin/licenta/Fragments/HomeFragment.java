@@ -11,7 +11,11 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,7 +42,6 @@ public class HomeFragment extends Fragment {
     private MainActivity activity;
 
     public TextView mNoNotesTV;
-    private EditText mTitleEditText;
     public ImageButton deleteButton;
 
     public boolean deleteFlag;
@@ -51,7 +54,7 @@ public class HomeFragment extends Fragment {
 
     public ArrayList<Note> mNoteList;
 
-    public View layout;
+//    public View layout;
 
     public HomeFragment() {
     }
@@ -98,8 +101,8 @@ public class HomeFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!deleteFlag) {
                     displayWidth = view.getWidth();
-                    layout = view.findViewById(R.id.noteLayout);
-                    layout.animate().translationX(-displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
+//                    layout = view.findViewById(R.id.noteLayout);
+//                    layout.animate().translationX(-displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     deleteButton = view.findViewById(R.id.delete_btn);
                     deleteButton.setVisibility(View.VISIBLE);
                     deleteButton.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
@@ -112,7 +115,7 @@ public class HomeFragment extends Fragment {
                     deleteFlag = true;
                 } else {
                     deleteButton.animate().translationX(displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
-                    layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
+//                    layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     deleteButton.setVisibility(View.GONE);
                     deleteFlag = false;
                 }
@@ -128,26 +131,25 @@ public class HomeFragment extends Fragment {
                 params.put(MyConstants.paramsType, MyConstants.paramsNote);
                 params.put(MyConstants.paramsEdit, MyConstants.TRUE);
                 params.put(MyConstants.paramsTitle, mAdapter.getItem(position).getTitle());
+                params.put(MyConstants.paramsNote, mAdapter.getItem(position).getNote());
                 Helper.getInstance().showDialog(getContext(), params);
                 return false;
             }
         });
 
-        mTitleEditText = rootView.findViewById(R.id.title_et);
-
-        Button mAddNoteBtn = rootView.findViewById(R.id.add_note);
-        mAddNoteBtn.getBackground().setAlpha(50);
-        mAddNoteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put(MyConstants.paramsType, MyConstants.paramsNote);
-                params.put(MyConstants.paramsEdit, MyConstants.FALSE);
-                params.put(MyConstants.paramsTitle, mTitleEditText.getText().toString());
-                Helper.getInstance().showDialog(getContext(), params);
-                mTitleEditText.setText("");
-            }
-        });
+//        Button mAddNoteBtn = rootView.findViewById(R.id.add_note);
+//        mAddNoteBtn.getBackground().setAlpha(50);
+//        mAddNoteBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                HashMap<String, String> params = new HashMap<>();
+//                params.put(MyConstants.paramsType, MyConstants.paramsNote);
+//                params.put(MyConstants.paramsEdit, MyConstants.FALSE);
+//                params.put(MyConstants.paramsTitle, mTitleEditText.getText().toString());
+//                Helper.getInstance().showDialog(getContext(), params);
+//                mTitleEditText.setText("");
+//            }
+//        });
         ImageButton mStartListeningBtn = rootView.findViewById(R.id.start_listening_btn);
         mStartListeningBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,7 +167,35 @@ public class HomeFragment extends Fragment {
 
         new PopulateNoteListAsync().execute();
 
+        setHasOptionsMenu(true);
         return rootView;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_note:
+                HashMap<String, String> params = new HashMap<>();
+                params.put(MyConstants.paramsType, MyConstants.paramsNote);
+                params.put(MyConstants.paramsEdit, MyConstants.FALSE);
+                Helper.getInstance().showDialog(getContext(), params);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //the options menu contains a simple search mechanism
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home, menu);
+
+//        MenuItem addNote = menu.findItem(R.id.action_add_note);
+//        addNote.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                return false;
+//            }
+//        });
     }
 
     @Override

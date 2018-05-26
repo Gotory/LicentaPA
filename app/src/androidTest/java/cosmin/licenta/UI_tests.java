@@ -127,7 +127,7 @@ public class UI_tests {
     @Test
     public void testCase4() {
         try {
-            onView(withId(R.id.add_note)).perform(click());
+            onView(withId(R.id.action_add_note)).perform(click());
 
             onView(withText(R.string.note_dialog_text)).check(matches(isDisplayed()));
 
@@ -141,11 +141,11 @@ public class UI_tests {
     @Test
     public void testCase5() {
         try {
-            onView(withId(R.id.add_note)).perform(click());
+            onView(withId(R.id.action_add_note)).perform(click());
 
-            onView(withId(R.id.title_et)).perform(typeText("test title"));
+            onView(withId(R.id.note_title)).perform(typeText("test title"));
 
-            onView(withId(R.id.dialog_data)).perform(typeText("test"));
+            onView(withId(R.id.note_text)).perform(typeText("test"));
 
             onView(withId(android.R.id.button1)).perform(click());
 
@@ -282,9 +282,9 @@ public class UI_tests {
     @Test
     public void testCase13() {
         try {
-            onView(withId(R.id.add_note)).perform(click());
+            onView(withId(R.id.action_add_note)).perform(click());
 
-            onView(withId(R.id.dialog_data)).perform(typeText("test"));
+            onView(withId(R.id.note_text)).perform(typeText("test"));
 
             onView(withId(android.R.id.button1)).perform(click());
 

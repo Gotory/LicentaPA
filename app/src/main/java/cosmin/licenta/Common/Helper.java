@@ -249,7 +249,7 @@ public class Helper {
             if (homeFragment.mNoteList.isEmpty())
                 homeFragment.mNoNotesTV.setVisibility(View.VISIBLE);
             homeFragment.deleteButton.animate().translationX(homeFragment.displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
-            homeFragment.layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
+//            homeFragment.layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
             homeFragment.deleteButton.setVisibility(View.GONE);
             homeFragment.deleteFlag = false;
         }
@@ -276,17 +276,18 @@ public class Helper {
             }
             case MyConstants.paramsNote: {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View view = inflater.inflate(R.layout.one_et_dialog, null);
+                final View view = inflater.inflate(R.layout.note_dialog, null);
+                final EditText titleText = view.findViewById(R.id.note_title);
+                final EditText noteText = view.findViewById(R.id.note_text);
                 builder.setView(view);
                 builder.setTitle(R.string.note_dialog_title);
                 builder.setMessage(R.string.note_dialog_text);
                 builder.setPositiveButton(R.string.general_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        EditText noteText = view.findViewById(R.id.dialog_data);
                         if (params.get(MyConstants.paramsEdit).equals(MyConstants.FALSE)) {
                             Note note = new Note();
-                            if (params.get(MyConstants.paramsTitle).isEmpty()) {
+                            if (titleText.getText().toString().isEmpty()) {
                                 note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
                             } else {
                                 note.setTitle(params.get(MyConstants.paramsTitle));
@@ -297,7 +298,7 @@ public class Helper {
                             }
                         } else {
                             if (!noteText.getText().toString().isEmpty()) {
-                                new DBHelper(context).editNote(params.get(MyConstants.paramsTitle), noteText.getText().toString());
+                                new DBHelper(context).editNote(params.get(MyConstants.paramsTitle), titleText.getText().toString(), noteText.getText().toString());
                             }
                         }
                         Intent intent = new Intent(MyConstants.actionNewNote);

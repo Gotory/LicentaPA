@@ -102,11 +102,14 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void editNote(String title, String newText) {
+    public void editNote(String title, String newTitle, String newText) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(NOTES_COLUMN_NOTE, newText);
+        if(!newText.isEmpty()) {
+            values.put(NOTES_COLUMN_NOTE_TITLE, newTitle);
+        }
 
         db.update(TABLE_NOTES, values, NOTES_COLUMN_NOTE_TITLE + "= ?", new String[]{title});
         db.close();

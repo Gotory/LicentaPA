@@ -57,7 +57,7 @@ public class InstrumentedTest {
             ArrayList<Note> list = dbHelper.getNotes();
             Note note = list.get(0);
 
-            dbHelper.editNote(note.getTitle(), "new db test");
+            dbHelper.editNote(note.getTitle(), "new title", "new db test");
         } catch (Exception e) {
             e.printStackTrace();
         }

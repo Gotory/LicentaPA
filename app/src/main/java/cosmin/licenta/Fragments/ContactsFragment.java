@@ -1,7 +1,6 @@
 package cosmin.licenta.Fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,7 +42,7 @@ public class ContactsFragment extends Fragment {
     private boolean flag;
     private int displayWidth;
     private View buttonsLayout;
-    private View layout;
+//    private View layout;
 
     public ContactsFragment() {
     }
@@ -77,8 +75,8 @@ public class ContactsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!flag) {
                     displayWidth = view.getWidth();
-                    layout = view.findViewById(R.id.contactLayout);
-                    layout.animate().translationX(-displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
+//                    layout = view.findViewById(R.id.contactLayout);
+//                    layout.animate().translationX(-displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     buttonsLayout = view.findViewById(R.id.contact_buttons_layout);
                     buttonsLayout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     buttonsLayout.setVisibility(View.VISIBLE);
@@ -109,7 +107,7 @@ public class ContactsFragment extends Fragment {
                     flag = true;
                 } else {
                     buttonsLayout.animate().translationX(displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
-                    layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
+//                    layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     buttonsLayout.setVisibility(View.GONE);
                     flag = false;
                 }
@@ -137,7 +135,7 @@ public class ContactsFragment extends Fragment {
         inflater.inflate(R.menu.menu_contact_list, menu);
 
         MenuItem searchBar = menu.findItem(R.id.action_search_contact_list);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchBar);
+        SearchView searchView = (SearchView) searchBar.getActionView();
         searchView.setFocusable(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -186,15 +184,10 @@ public class ContactsFragment extends Fragment {
     }
 
     private class PopulateContactListAsync extends AsyncTask<String, String, String> {
-        private ProgressDialog pDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            pDialog = new ProgressDialog(mContext);
-//            pDialog.setIndeterminate(false);
-//            pDialog.setCancelable(false);
-//            pDialog.show();
         }
 
         @Override
@@ -235,9 +228,6 @@ public class ContactsFragment extends Fragment {
         protected void onPostExecute(String file_url) {
             mAdapter = new ContactsAdapter(mContext, R.layout.list_item_contact, mContactsList);
             mListView.setAdapter(mAdapter);
-//            if (pDialog != null && pDialog.isShowing()) {
-//                pDialog.dismiss();
-//            }
         }
     }
 }

@@ -54,5 +54,6 @@
     <string name="message">What message should i send</string>
     <string name="currency_type">Ron -> %1$s</string>
     <string name="event_added">Event successfully added</string>
+    <string name="note_text_hint">Note text</string>
 
 </resources>
