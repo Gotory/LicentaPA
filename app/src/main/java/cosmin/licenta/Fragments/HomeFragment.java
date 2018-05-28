@@ -1,5 +1,6 @@
 package cosmin.licenta.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -118,6 +120,18 @@ public class HomeFragment extends Fragment {
 //                    layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     deleteButton.setVisibility(View.GONE);
                     deleteFlag = false;
+                }
+            }
+        });
+
+        View appBase = rootView.findViewById(R.id.home_fragment);
+        appBase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                View focus = activity.getCurrentFocus();
+                if (focus != null) {
+                    inputMethodManager.hideSoftInputFromWindow(focus.getWindowToken(), 0);
                 }
             }
         });

@@ -17,6 +17,7 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.longClick;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerMatchers.isClosed;
@@ -97,7 +98,11 @@ public class UI_tests {
 
             onData(anything()).inAdapterView(withId(R.id.contacts_list)).atPosition(0).perform(click());
 
-            onView(withId(R.id.call_button)).perform(click());
+            Thread.sleep(1000);
+
+            onData(anything()).inAdapterView(withId(R.id.contacts_list)).atPosition(0).onChildView(withId(R.id.call_button)).perform(click());
+
+            Thread.sleep(2000);
 
             onView(withId(R.id.decline_Btn)).perform(click());
         } catch (Exception e) {
@@ -116,7 +121,7 @@ public class UI_tests {
 
             onData(anything()).inAdapterView(withId(R.id.contacts_list)).atPosition(0).perform(click());
 
-            onView(withId(R.id.sms_button)).perform(click());
+            onData(anything()).inAdapterView(withId(R.id.contacts_list)).atPosition(0).onChildView(withId(R.id.sms_button)).perform(click());
 
             onView(withId(android.R.id.button2)).perform(click());
         } catch (Exception e) {
@@ -219,12 +224,12 @@ public class UI_tests {
 
             onView(withId(R.id.event_name)).perform(typeText("test"));
             onView(withId(R.id.event_desc)).perform(typeText("test description"));
-            onView(withId(R.id.start_time_hour)).perform(typeText("13"));
-            onView(withId(R.id.start_time_minute)).perform(typeText("25"));
-            onView(withId(R.id.end_time_hour)).perform(typeText("14"));
-            onView(withId(R.id.end_time_minute)).perform(typeText("55"));
-            onView(withId(R.id.reminder_time_hour)).perform(typeText("00"));
-            onView(withId(R.id.reminder_time_minute)).perform(typeText("05"));
+            onView(withId(R.id.start_time_hour)).perform(replaceText("13"));
+            onView(withId(R.id.start_time_minute)).perform(replaceText("25"));
+            onView(withId(R.id.end_time_hour)).perform(replaceText("14"));
+            onView(withId(R.id.end_time_minute)).perform(replaceText("55"));
+            onView(withId(R.id.reminder_time_hour)).perform(replaceText("00"));
+            onView(withId(R.id.reminder_time_minute)).perform(replaceText("05"));
             onView(withClassName(Matchers.equalTo(CalendarView.class.getName()))).perform(PickerActions.setDate(2018, 6, 5));
             onView(withId(R.id.add_event)).perform(click());
 
@@ -270,7 +275,7 @@ public class UI_tests {
         try {
             onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(longClick());
 
-            onView(withId(R.id.dialog_data)).perform(typeText("new test"));
+            onView(withId(R.id.note_text)).perform(typeText("new test"));
 
             onView(withId(android.R.id.button1)).perform(click());
 
@@ -298,7 +303,7 @@ public class UI_tests {
         try {
             onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(click());
 
-            onView(withId(R.id.delete_btn)).perform(click());
+            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).onChildView(withId(R.id.decline_Btn)).perform(click());
 
         } catch (Exception e) {
             e.printStackTrace();

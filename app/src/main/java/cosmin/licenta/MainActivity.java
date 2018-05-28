@@ -28,14 +28,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -62,13 +66,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public Activity activity;
 
     public ArrayList<String> commandList;
-    private ArrayList<String> results;
+    private ArrayList<String> results = new ArrayList<>();
 
     private boolean first = true;
 
     private String newContactName;
-    private HashMap<String, String> newEventData;
-    private HashMap<String, Integer> newEventDate;
+    private HashMap<String, String> newEventData = new HashMap<>();
+    private HashMap<String, Integer> newEventDate = new HashMap<>();
 
     private FrameLayout appBase;
 
@@ -91,19 +95,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navView = findViewById(R.id.navigation_view);
         prefs = activity.getSharedPreferences(MyConstants.PREFS_NAME, Context.MODE_PRIVATE);
-        appBase = findViewById(R.id.frag_content_frame);
-        appBase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                View focus = activity.getCurrentFocus();
-                if (focus != null) {
-                    inputMethodManager.hideSoftInputFromWindow(focus.getWindowToken(), 0);
-                }
-            }
-        });
 
-        results = new ArrayList<>();
+        results.clear();
 
         if (navView != null) {
             navView.getMenu().getItem(0).setChecked(true);
@@ -233,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             commandList.add("add_contact");
                         }
                         if (result.toLowerCase().contains("exit") || result.toLowerCase().contains("log out") || result.toLowerCase().contains("close") || result.toLowerCase().contains("stop app") || result.toLowerCase().contains("log off")) {
+                            commandList.add("exit");
                             drawerButtonActions(R.id.nav_log_out);
                         }
                         if (result.toLowerCase().contains("nothing")) {
@@ -250,15 +244,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                            commandList.add("currency");
 //                        }
                         if (result.toLowerCase().contains("timer") || result.toLowerCase().contains("chronometer")) {
+                            drawerButtonActions(R.id.nav_timer);
                             commandList.add("timer");
                         }
                         if (result.toLowerCase().contains("reset") || result.equals("stop timer")) {
+                            drawerButtonActions(R.id.nav_timer);
                             commandList.add("reset");
                         }
                         if (result.toLowerCase().contains("clear notes") || result.toLowerCase().contains("delete notes")) {
                             commandList.add("delete_notes");
                         }
                         if (result.toLowerCase().contains("clear routes") || result.toLowerCase().contains("delete gps information")) {
+                            drawerButtonActions(R.id.nav_gps);
                             commandList.add("delete_gps");
                         }
                         if (result.toLowerCase().contains("change name") || result.toLowerCase().contains("modify username") || result.toLowerCase().contains("change username") || result.toLowerCase().contains("modify name")) {
@@ -267,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (result.toLowerCase().contains("alarm")) {
                             commandList.add("alarm");
                         }
-                        if (result.toLowerCase().contains("note") || result.toLowerCase().contains("home")) {
+                        if (result.toLowerCase().contains("note")) {
                             commandList.add("home");
                         }
                         if (result.toLowerCase().contains("calculate")) {
@@ -282,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                     }
                     if (commandList.isEmpty()) {
-                        tts.speak("You did not imput a command please try again", TextToSpeech.QUEUE_FLUSH, null);
+                        tts.speak("You did not input a command please try again", TextToSpeech.QUEUE_FLUSH, null);
                     } else if (commandList.get(0).equals("nothing")) {
                         tts.speak("Why did you start me then", TextToSpeech.QUEUE_FLUSH, null);
                         commandList.clear();
@@ -307,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             if (result.equals("no")) {
                                 this.results.remove(0);
                             }
-                            if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
+                            if (!this.results.isEmpty() && !result.equals("yes")) {
                                 String name = this.results.get(0);
                                 tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
@@ -315,8 +312,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (this.results.isEmpty()) {
                                     tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
                                 } else {
+                                    String name = this.results.get(0);
                                     for (Contact contact : fragment.mContactsList) {
-                                        if (contact.getName().toLowerCase().equals(result.toLowerCase())) {
+                                        if (contact.getName().toLowerCase().equals(name.toLowerCase())) {
                                             Helper.getInstance().callNumber(contact.getPhoneNumber(), this);
                                             commandList.clear();
                                             first = true;
@@ -342,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (result.equals("no")) {
                                     this.results.remove(0);
                                 }
-                                if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
+                                if (!this.results.isEmpty() && !result.equals("yes")) {
                                     String name = this.results.get(0);
                                     tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
@@ -350,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     if (this.results.isEmpty()) {
                                         tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
                                     } else {
+
                                         for (Contact contact : fragment.mContactsList) {
                                             if (contact.getName().toLowerCase().equals(this.results.get(0).toLowerCase())) {
                                                 phone = contact.getPhoneNumber();
@@ -382,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (result.equals("no")) {
                                     this.results.remove(0);
                                 }
-                                if ((!this.results.isEmpty() && !result.equals("yes")) || results.size() > 1) {
+                                if (!this.results.isEmpty() && !result.equals("yes")) {
                                     String name = this.results.get(0);
                                     tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
@@ -443,18 +442,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     listenAfterDelay(2000, true, this);
                                 }
                             } else if (step == 3) {
-                                String result = results.get(0);
                                 Log.d("+++", results.toString());
-                                //todo split hour and minute
-//                                newEvent.put(MyConstants.eventStartHour, result);
+                                String hour = "";
+                                String minute = "";
+                                for (String result : results) {
+                                    if (result.contains(":")) {
+                                        hour = result.substring(0, 2);
+                                        minute = result.substring(3, 5);
+                                        Log.d("+++", hour + " " + minute);
+                                        break;
+                                    } else if (result.contains(" ")) {
+                                        hour = result.substring(0, 2);
+                                        minute = result.substring(3, 5);
+                                        Log.d("+++", hour + " " + minute);
+                                        break;
+                                    }
+                                }
+                                newEventDate.put(MyConstants.eventStartHour, Integer.valueOf(hour));
+                                newEventDate.put(MyConstants.eventStartMin, Integer.valueOf(minute));
                                 step++;
                                 tts.speak("Specify end time", TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 4) {
-                                String result = results.get(0);
                                 Log.d("+++", results.toString());
-                                //todo split hour and minute
-//                                newEvent.put(MyConstants.eventEndHour, result);
+                                String hour = "";
+                                String minute = "";
+                                for (String result : results) {
+                                    if (result.contains(":")) {
+                                        hour = result.substring(0, 2);
+                                        minute = result.substring(3, 5);
+                                        Log.d("+++", hour + " " + minute);
+                                        break;
+                                    } else if (result.contains(" ")) {
+                                        hour = result.substring(0, 2);
+                                        minute = result.substring(3, 5);
+                                        Log.d("+++", hour + " " + minute);
+                                        break;
+                                    }
+                                }
+                                newEventDate.put(MyConstants.eventEndHour, Integer.valueOf(hour));
+                                newEventDate.put(MyConstants.eventEndMin, Integer.valueOf(minute));
                                 step++;
                                 tts.speak("Do you want a reminder?", TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
@@ -472,33 +499,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     listenAfterDelay(2000, true, this);
                                 }
                             } else if (step == 6) {
-                                String result = results.get(0);
                                 Log.d("+++", results.toString());
-                                //todo split hour and minute
-//                                newEvent.put(MyConstants.eventReminderHour, result);
+                                String hour = "";
+                                String minute = "";
+                                for (String result : results) {
+                                    if (result.contains(":")) {
+                                        hour = result.substring(0, 2);
+                                        minute = result.substring(3, 5);
+                                        Log.d("+++", hour + " " + minute);
+                                        break;
+                                    } else if (result.contains(" ")) {
+                                        hour = result.substring(0, 2);
+                                        minute = result.substring(3, 5);
+                                        Log.d("+++", hour + " " + minute);
+                                        break;
+                                    }
+                                }
+                                newEventDate.put(MyConstants.eventReminderHour, Integer.valueOf(hour));
+                                newEventDate.put(MyConstants.eventReminderMin, Integer.valueOf(minute));
                                 step++;
                                 tts.speak("In what day", TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 7) {
-                                //todo make sure it's a year
                                 String result = results.get(0);
                                 Log.d("+++", results.toString());
-//                                newEventDate.put(MyConstants.eventDay, Integer.valueOf(result));
-                                step++;
-                                tts.speak("In what month", TextToSpeech.QUEUE_FLUSH, null);
-                                listenAfterDelay(2000, true, this);
+                                if (result.equals("today")) {
+                                    Date currentTime = Calendar.getInstance().getTime();
+                                    newEventDate.put(MyConstants.eventDay, Integer.valueOf((String) DateFormat.format("dd", currentTime)));
+                                    newEventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", currentTime)));
+                                    newEventDate.put(MyConstants.eventYear, Integer.valueOf((String) DateFormat.format("yyyy", currentTime)));
+                                    Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
+                                    step = 0;
+                                    commandList.remove(0);
+                                    makeNewCommand();
+                                } else {
+                                    newEventDate.put(MyConstants.eventDay, Integer.valueOf(result));
+                                    step++;
+                                    tts.speak("In what month", TextToSpeech.QUEUE_FLUSH, null);
+                                    listenAfterDelay(2000, true, this);
+                                }
                             } else if (step == 8) {
-                                String result = results.get(0);
-                                Log.d("+++", results.toString());
-//                                newEventDate.put(MyConstants.eventMonth, Integer.valueOf(result));
-                                step++;
-                                tts.speak("In what year", TextToSpeech.QUEUE_FLUSH, null);
-                                listenAfterDelay(2000, true, this);
+                                try {
+                                    String result = results.get(0);
+                                    Log.d("+++", results.toString());
+                                    SimpleDateFormat inputFormat = new SimpleDateFormat("MMMM");
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(inputFormat.parse(result));
+                                    SimpleDateFormat outputFormat = new SimpleDateFormat("MM");
+                                    newEventDate.put(MyConstants.eventMonth, Integer.valueOf(outputFormat.format(cal.getTime())));
+                                    Log.d("+++", outputFormat.format(cal.getTime()));
+                                    step++;
+                                    tts.speak("In what year", TextToSpeech.QUEUE_FLUSH, null);
+                                    listenAfterDelay(2000, true, this);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             } else if (step == 9) {
                                 String result = results.get(0);
                                 Log.d("+++", results.toString());
-//                                newEventDate.put(MyConstants.eventYear, Integer.valueOf(result));
-//                                Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
+                                newEventDate.put(MyConstants.eventYear, Integer.valueOf(result));
+                                Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
                                 step = 0;
                                 commandList.remove(0);
                                 makeNewCommand();
@@ -523,20 +583,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             break;
                         }
                         case "alarm": {
-                            //todo
-                            String result = results.get(0);
                             Log.d("+++", results.toString());
-
-//                            Calendar alarmHour = Calendar.getInstance();
-
-//                            alarmHour.set(Calendar.HOUR_OF_DAY, result);
-//                            alarmHour.set(Calendar.MINUTE, result);
-//                            alarmHour.set(Calendar.SECOND, 0);
-//                            alarmHour.set(Calendar.MILLISECOND, 0);
-//                            Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-//                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 1, intent, 0);
-//                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//                            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmHour.getTimeInMillis(), pendingIntent);
+                            String hour = "";
+                            String minute = "";
+                            for (String result : results) {
+                                if (result.contains(":")) {
+                                    hour = result.substring(0, 2);
+                                    minute = result.substring(3, 5);
+                                    Log.d("+++", hour + " " + minute);
+                                    break;
+                                } else if (result.contains(" ")) {
+                                    hour = result.substring(0, 2);
+                                    minute = result.substring(3, 5);
+                                    Log.d("+++", hour + " " + minute);
+                                    break;
+                                }
+                            }
+                            Calendar alarmHour = Calendar.getInstance();
+                            alarmHour.set(Calendar.HOUR_OF_DAY, Integer.valueOf(hour));
+                            alarmHour.set(Calendar.MINUTE, Integer.valueOf(minute));
+                            alarmHour.set(Calendar.SECOND, 0);
+                            alarmHour.set(Calendar.MILLISECOND, 0);
+                            Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 1, intent, 0);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmHour.getTimeInMillis(), pendingIntent);
                             commandList.remove(0);
                             makeNewCommand();
                             break;
@@ -605,20 +676,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                break;
 //            }
             case "timer": {
-                drawerButtonActions(R.id.nav_timer);
-                TimerFragment fragment = (TimerFragment) getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
-                fragment.startTimer();
-                prefs.edit().putString(MyConstants.prefsLastCommand, "timer").apply();
-                tts.speak("Timer started", TextToSpeech.QUEUE_FLUSH, null);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                        if (fragment instanceof TimerFragment) {
+                            TimerFragment timerFrag = (TimerFragment) fragment;
+                            timerFrag.startTimer();
+                            prefs.edit().putString(MyConstants.prefsLastCommand, "timer").apply();
+                            tts.speak("Timer started", TextToSpeech.QUEUE_FLUSH, null);
+
+                        }
+                    }
+                }, 1000);
                 break;
             }
             case "reset": {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
-                if (fragment instanceof TimerFragment) {
-                    TimerFragment timerFrag = (TimerFragment) fragment;
-                    timerFrag.stopTimer();
-                    tts.speak("Timer reset", TextToSpeech.QUEUE_FLUSH, null);
-                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                        if (fragment instanceof TimerFragment) {
+                            TimerFragment timerFrag = (TimerFragment) fragment;
+                            timerFrag.stopTimer();
+                            tts.speak("Timer reset", TextToSpeech.QUEUE_FLUSH, null);
+                        }
+                    }
+                }, 1000);
                 break;
             }
             case "delete_notes": {
@@ -634,15 +718,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case "delete_gps": {
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
-                if (fragment instanceof GpsFragment) {
-                    GpsFragment gpsFrag = (GpsFragment) fragment;
-                    new DBHelper(this).deleteAllDestinations();
-                    gpsFrag.mDestinationList.clear();
-                    gpsFrag.mAdapter.notifyDataSetChanged();
-                    prefs.edit().putString(MyConstants.prefsLastCommand, "delete_gps").apply();
-                    tts.speak("Destinations cleared", TextToSpeech.QUEUE_FLUSH, null);
-                }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                        if (fragment instanceof GpsFragment) {
+                            GpsFragment gpsFrag = (GpsFragment) fragment;
+                            new DBHelper(MainActivity.this).deleteAllDestinations();
+                            gpsFrag.mDestinationList.clear();
+                            gpsFrag.mAdapter.notifyDataSetChanged();
+                            prefs.edit().putString(MyConstants.prefsLastCommand, "delete_gps").apply();
+                            tts.speak("Destinations cleared", TextToSpeech.QUEUE_FLUSH, null);
+                        }
+                    }
+                }, 1000);
                 break;
             }
             case "change_user": {
@@ -665,7 +754,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case "calculate": {
-                drawerButtonActions(R.id.nav_home);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "calculate").apply();
                 tts.speak("Please specify expression", TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
@@ -773,10 +861,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_listen: {
                 if (!prefs.getString(MyConstants.prefsUser, "").equals("")) {
                     tts.speak(activity.getString(R.string.hello_user, prefs.getString(MyConstants.prefsUser, "")), TextToSpeech.QUEUE_FLUSH, null);
+                    listenAfterDelay(2000, false, this);
                 } else {
                     tts.speak(activity.getString(R.string.hello_user_default), TextToSpeech.QUEUE_FLUSH, null);
+                    listenAfterDelay(4000, false, this);
                 }
-                listenAfterDelay(2000, false, this);
                 Helper.getInstance().changeSelectedNavItem(this);
                 break;
             }

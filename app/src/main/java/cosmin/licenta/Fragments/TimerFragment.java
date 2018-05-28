@@ -45,6 +45,8 @@ public class TimerFragment extends Fragment {
         sec = 0;
         min = 0;
 
+        //todo - split into timer and stopwatch
+
         rootView.findViewById(R.id.timer_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

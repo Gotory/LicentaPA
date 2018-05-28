@@ -280,8 +280,12 @@ public class Helper {
                 final EditText titleText = view.findViewById(R.id.note_title);
                 final EditText noteText = view.findViewById(R.id.note_text);
                 builder.setView(view);
-                builder.setTitle(R.string.note_dialog_title);
-                builder.setMessage(R.string.note_dialog_text);
+                if (params.get(MyConstants.paramsEdit).equals(MyConstants.FALSE)) {
+                    builder.setTitle(R.string.note_dialog_title);
+                    builder.setMessage(R.string.note_dialog_text);
+                } else {
+                    builder.setTitle("Edit note");
+                }
                 builder.setPositiveButton(R.string.general_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -290,13 +294,15 @@ public class Helper {
                             if (titleText.getText().toString().isEmpty()) {
                                 note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
                             } else {
-                                note.setTitle(params.get(MyConstants.paramsTitle));
+                                note.setTitle(titleText.getText().toString());
                             }
                             if (!noteText.getText().toString().isEmpty()) {
                                 note.setNote(noteText.getText().toString());
                                 new DBHelper(context).addNote(note);
                             }
                         } else {
+                            titleText.setText(params.get(MyConstants.paramsTitle));
+                            noteText.setText(params.get(MyConstants.paramsNote));
                             if (!noteText.getText().toString().isEmpty()) {
                                 new DBHelper(context).editNote(params.get(MyConstants.paramsTitle), titleText.getText().toString(), noteText.getText().toString());
                             }
