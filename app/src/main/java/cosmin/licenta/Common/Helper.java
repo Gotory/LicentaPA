@@ -274,6 +274,21 @@ public class Helper {
                 });
                 break;
             }
+            case MyConstants.paramsCurrency: {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View view = inflater.inflate(R.layout.one_et_dialog, null);
+                builder.setView(view);
+                builder.setTitle("Give the sum");
+                builder.setPositiveButton(R.string.general_dialog_send, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        EditText currencyText = view.findViewById(R.id.dialog_data);
+                        if (!currencyText.getText().toString().isEmpty())
+                            Toast.makeText(context, String.valueOf(Integer.valueOf(currencyText.getText().toString())*Integer.valueOf(params.get(MyConstants.paramsCurrency))), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+            }
             case MyConstants.paramsNote: {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View view = inflater.inflate(R.layout.note_dialog, null);

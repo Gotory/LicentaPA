@@ -19,7 +19,7 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class InstrumentedTest {
+public class MethodTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -71,7 +71,7 @@ public class InstrumentedTest {
         try {
             DBHelper dbHelper = new DBHelper(appContext);
 
-            String destination = "test DB";
+            String destination = "Ca Jou";
             dbHelper.addDest(destination);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,8 +80,7 @@ public class InstrumentedTest {
 
     @Test
     public void testCase5() {
-        if (Helper.getInstance().eval("((4 - 2^3 + 1) * -sqrt(3*3+4*4)) / 2") != 7.5)
-            fail();
+        assertEquals(String.valueOf(Helper.getInstance().eval("((4 - 2^3 + 1) * -sqrt(3*3+4*4)) / 2")),"7.5");
     }
 
     @Test

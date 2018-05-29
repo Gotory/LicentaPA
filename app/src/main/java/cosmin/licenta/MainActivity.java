@@ -33,7 +33,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private HashMap<String, String> newEventData = new HashMap<>();
     private HashMap<String, Integer> newEventDate = new HashMap<>();
 
-    private FrameLayout appBase;
+    private String currency = "";
 
     private int step;
     private String phone;
@@ -240,9 +239,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (result.toLowerCase().contains("event") || result.toLowerCase().contains("reminder") || result.toLowerCase().contains("calendar")) {
                             commandList.add("event");
                         }
-//                        if (result.toLowerCase().contains("currency") || result.toLowerCase().contains("exchange")) {
-//                            commandList.add("currency");
-//                        }
+                        if (result.toLowerCase().contains("currency") || result.toLowerCase().contains("exchange")) {
+                            commandList.add("currency");
+                        }
                         if (result.toLowerCase().contains("timer") || result.toLowerCase().contains("chronometer")) {
                             drawerButtonActions(R.id.nav_timer);
                             commandList.add("timer");
@@ -267,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (result.toLowerCase().contains("note")) {
                             commandList.add("home");
                         }
-                        if (result.toLowerCase().contains("calculate")) {
+                        if (result.toLowerCase().contains("calculate") || result.toLowerCase().contains("evaluate")) {
                             commandList.add("calculate");
                         }
                         if (result.toLowerCase().contains(""))
@@ -565,6 +564,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                             break;
                         }
+                        case "currency": {
+                            if (step == 0) {
+                                String result = results.get(0);
+                                currency= result;
+                                Log.d("+++", results.toString());
+                                tts.speak("Specify sum", TextToSpeech.QUEUE_FLUSH, null);
+                                listenAfterDelay(2000, true, this);
+                            } else if (step == 1) {
+                                String result = results.get(0);
+                                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+                                if (fragment instanceof CurrencyFragment) {
+                                    CurrencyFragment currencyFragment = (CurrencyFragment) fragment;
+                                    currencyFragment.getSpecificCurrency(currency,Integer.valueOf(result));
+                                    step = 0;
+                                    commandList.remove(0);
+                                    makeNewCommand();
+                                }
+                            }
+                            break;
+                        }
                         case "home": {
                             String result = results.get(0);
                             Note note = new Note();
@@ -668,13 +687,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 listenAfterDelay(2000, true, this);
                 break;
             }
-//            case "currency": {
-//                drawerButtonActions(R.id.nav_currency);
-//                prefs.edit().putString(MyConstants.prefsLastCommand, "currency").apply();
-//                tts.speak("Please specify currency", TextToSpeech.QUEUE_FLUSH, null);
-//                listenAfterDelay(2000, true, this);
-//                break;
-//            }
+            case "currency": {
+                drawerButtonActions(R.id.nav_currency);
+                prefs.edit().putString(MyConstants.prefsLastCommand, "currency").apply();
+                tts.speak("Please specify currency", TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(2000, true, this);
+                break;
+            }
             case "timer": {
                 new Handler().postDelayed(new Runnable() {
                     @Override

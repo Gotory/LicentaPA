@@ -11,6 +11,7 @@ public class MyConstants {
     public static final String paramsEdit = "edit";
     public static final String paramsNote = "note";
     public static final String paramsContact = "contact";
+    public static final String paramsCurrency = "currency";
     public static final String paramsSMS = "SMS";
     public static final String paramsAddress = "address";
 

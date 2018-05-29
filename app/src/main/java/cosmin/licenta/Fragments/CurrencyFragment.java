@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,10 +19,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cosmin.licenta.Adapters.CurrencyAdapter;
 import cosmin.licenta.Common.Exchange;
+import cosmin.licenta.Common.Helper;
 import cosmin.licenta.Common.HttpRequest;
+import cosmin.licenta.Common.MyConstants;
 import cosmin.licenta.R;
 
 
@@ -50,6 +55,16 @@ public class CurrencyFragment extends Fragment {
         mContext = getContext();
         mListView = rootView.findViewById(R.id.currency_list);
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(MyConstants.paramsType, MyConstants.paramsCurrency);
+                params.put(MyConstants.paramsCurrency, mAdapter.getItem(position).getRate());
+                Helper.getInstance().showDialog(getContext(), params);
+            }
+        });
+
         mExchangeRates = new ArrayList<>();
 
         //todo - create a graphic from more data
@@ -57,6 +72,15 @@ public class CurrencyFragment extends Fragment {
         new GetRatesTask().execute();
 
         return rootView;
+    }
+
+    public void getSpecificCurrency(String currencyType,int value){
+        for(int i=0;i<mAdapter.getCount();i++){
+            if(currencyType.equals(mAdapter.getItem(i).getType())){
+                Toast.makeText(mContext, String.valueOf(Integer.valueOf(mAdapter.getItem(i).getRate())*value), Toast.LENGTH_SHORT).show();
+                break;
+            }
+        }
     }
 
     @Override
