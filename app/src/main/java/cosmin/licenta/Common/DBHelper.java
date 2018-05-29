@@ -106,8 +106,10 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(NOTES_COLUMN_NOTE, newText);
         if(!newText.isEmpty()) {
+            values.put(NOTES_COLUMN_NOTE, newText);
+        }
+        if(!newTitle.isEmpty()) {
             values.put(NOTES_COLUMN_NOTE_TITLE, newTitle);
         }
 

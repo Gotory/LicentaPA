@@ -292,18 +292,18 @@ public class Helper {
                         if (params.get(MyConstants.paramsEdit).equals(MyConstants.FALSE)) {
                             Note note = new Note();
                             if (titleText.getText().toString().isEmpty()) {
-                                note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm a", Calendar.getInstance().getTime()).toString());
+                                note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm", Calendar.getInstance().getTime()).toString());
                             } else {
                                 note.setTitle(titleText.getText().toString());
                             }
-                            if (!noteText.getText().toString().isEmpty()) {
+                            if (!noteText.getText().toString().isEmpty() || !titleText.getText().toString().isEmpty()) {
                                 note.setNote(noteText.getText().toString());
                                 new DBHelper(context).addNote(note);
                             }
                         } else {
                             titleText.setText(params.get(MyConstants.paramsTitle));
                             noteText.setText(params.get(MyConstants.paramsNote));
-                            if (!noteText.getText().toString().isEmpty()) {
+                            if (!noteText.getText().toString().isEmpty() || !titleText.getText().toString().isEmpty()) {
                                 new DBHelper(context).editNote(params.get(MyConstants.paramsTitle), titleText.getText().toString(), noteText.getText().toString());
                             }
                         }
