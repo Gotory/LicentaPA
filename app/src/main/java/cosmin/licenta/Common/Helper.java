@@ -22,11 +22,9 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -283,8 +281,12 @@ public class Helper {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         EditText currencyText = view.findViewById(R.id.dialog_data);
-                        if (!currencyText.getText().toString().isEmpty())
-                            Toast.makeText(context, String.valueOf(Integer.valueOf(currencyText.getText().toString())*Integer.valueOf(params.get(MyConstants.paramsCurrency))), Toast.LENGTH_SHORT).show();
+                        if (!currencyText.getText().toString().isEmpty()) {
+                            int sum = Integer.valueOf(currencyText.getText().toString());
+                            int rate = Integer.valueOf(params.get(MyConstants.paramsCurrency));
+                            int result = sum/rate;
+                            Toast.makeText(context, String.valueOf(result) , Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 break;
@@ -463,7 +465,7 @@ public class Helper {
         context.getContentResolver().insert(CalendarContract.Reminders.CONTENT_URI, contentValues);
     }
 
-    public void startMaps(Context context, String destination){
+    public void startMaps(Context context, String destination) {
         destination = destination.replaceAll(" ", "+");
         Uri gmmIntentUri = parse("google.navigation:q=" + destination);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);

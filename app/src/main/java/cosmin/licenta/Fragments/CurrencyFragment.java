@@ -74,13 +74,15 @@ public class CurrencyFragment extends Fragment {
         return rootView;
     }
 
-    public void getSpecificCurrency(String currencyType,int value){
+    public String getSpecificCurrency(String currencyType,int value){
         for(int i=0;i<mAdapter.getCount();i++){
             if(currencyType.equals(mAdapter.getItem(i).getType())){
-                Toast.makeText(mContext, String.valueOf(Integer.valueOf(mAdapter.getItem(i).getRate())*value), Toast.LENGTH_SHORT).show();
-                break;
+                int rate = Integer.valueOf(mAdapter.getItem(i).getRate());
+                int result = value/rate;
+                return String.valueOf(result);
             }
         }
+        return null;
     }
 
     @Override
