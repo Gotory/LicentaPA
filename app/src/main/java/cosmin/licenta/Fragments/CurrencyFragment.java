@@ -74,11 +74,11 @@ public class CurrencyFragment extends Fragment {
         return rootView;
     }
 
-    public String getSpecificCurrency(String currencyType,int value){
+    public String getSpecificCurrency(String currencyType,double value){
         for(int i=0;i<mAdapter.getCount();i++){
             if(currencyType.equals(mAdapter.getItem(i).getType())){
-                int rate = Integer.valueOf(mAdapter.getItem(i).getRate());
-                int result = value/rate;
+                double rate = Double.valueOf(mAdapter.getItem(i).getRate());
+                double result = value/rate;
                 return String.valueOf(result);
             }
         }

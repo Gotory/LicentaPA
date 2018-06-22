@@ -102,7 +102,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void editNote(String title, String newTitle, String newText) {
+    public void editNote(String newTitle, String newText, String id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -113,7 +113,7 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(NOTES_COLUMN_NOTE_TITLE, newTitle);
         }
 
-        db.update(TABLE_NOTES, values, NOTES_COLUMN_NOTE_TITLE + "= ?", new String[]{title});
+        db.update(TABLE_NOTES, values, NOTES_COLUMN_ID + "= ?", new String[]{id});
         db.close();
     }
 
@@ -127,6 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (cursor.moveToNext()) {
             Note note = new Note();
+            note.setId(cursor.getString(0));
             note.setNote(cursor.getString(2));
             note.setTitle(cursor.getString(1));
             noteList.add(note);
@@ -138,9 +139,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return noteList;
     }
 
-    public void deleteNote(String title) {
+    public void deleteNote(String id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_NOTES, NOTES_COLUMN_NOTE_TITLE + "=?", new String[]{title});
+        db.delete(TABLE_NOTES, NOTES_COLUMN_ID + "=?", new String[]{id});
         db.close();
     }
 

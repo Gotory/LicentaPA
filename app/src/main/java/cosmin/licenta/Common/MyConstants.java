@@ -14,6 +14,7 @@ public class MyConstants {
     public static final String paramsCurrency = "currency";
     public static final String paramsSMS = "SMS";
     public static final String paramsAddress = "address";
+    public static final String noteID = "noteID";
 
     public static final String home_tag = "Home";
     public static final String contacts_tag = "Contacts";

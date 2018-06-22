@@ -22,6 +22,7 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -241,13 +242,12 @@ public class Helper {
             homeFragment = (HomeFragment) currentFrag;
         }
         if (homeFragment != null) {
-            new DBHelper(homeFragment.mContext).deleteNote(homeFragment.mAdapter.getItem(position).getTitle());
+            new DBHelper(homeFragment.mContext).deleteNote(homeFragment.mAdapter.getItem(position).getId());
             homeFragment.mNoteList.remove(position);
             homeFragment.mAdapter.notifyDataSetChanged();
             if (homeFragment.mNoteList.isEmpty())
                 homeFragment.mNoNotesTV.setVisibility(View.VISIBLE);
             homeFragment.deleteButton.animate().translationX(homeFragment.displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
-//            homeFragment.layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
             homeFragment.deleteButton.setVisibility(View.GONE);
             homeFragment.deleteFlag = false;
         }
@@ -282,9 +282,9 @@ public class Helper {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         EditText currencyText = view.findViewById(R.id.dialog_data);
                         if (!currencyText.getText().toString().isEmpty()) {
-                            int sum = Integer.valueOf(currencyText.getText().toString());
-                            int rate = Integer.valueOf(params.get(MyConstants.paramsCurrency));
-                            int result = sum/rate;
+                            double sum = Double.valueOf(currencyText.getText().toString());
+                            double rate = Double.valueOf(params.get(MyConstants.paramsCurrency));
+                            double result = sum/rate;
                             Toast.makeText(context, String.valueOf(result) , Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -296,6 +296,8 @@ public class Helper {
                 final View view = inflater.inflate(R.layout.note_dialog, null);
                 final EditText titleText = view.findViewById(R.id.note_title);
                 final EditText noteText = view.findViewById(R.id.note_text);
+                titleText.setText(params.get(MyConstants.paramsTitle));
+                noteText.setText(params.get(MyConstants.paramsNote));
                 builder.setView(view);
                 if (params.get(MyConstants.paramsEdit).equals(MyConstants.FALSE)) {
                     builder.setTitle(R.string.note_dialog_title);
@@ -306,7 +308,10 @@ public class Helper {
                 builder.setPositiveButton(R.string.general_dialog_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d("+++", "edit note1");
                         if (params.get(MyConstants.paramsEdit).equals(MyConstants.FALSE)) {
+                            Log.d("+++", "edit note3");
+
                             Note note = new Note();
                             if (titleText.getText().toString().isEmpty()) {
                                 note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm", Calendar.getInstance().getTime()).toString());
@@ -318,10 +323,12 @@ public class Helper {
                                 new DBHelper(context).addNote(note);
                             }
                         } else {
-                            titleText.setText(params.get(MyConstants.paramsTitle));
-                            noteText.setText(params.get(MyConstants.paramsNote));
-                            if (!noteText.getText().toString().isEmpty() || !titleText.getText().toString().isEmpty()) {
-                                new DBHelper(context).editNote(params.get(MyConstants.paramsTitle), titleText.getText().toString(), noteText.getText().toString());
+                            Log.d("+++", "edit note2");
+
+                            Log.d("+++", params.get(MyConstants.paramsTitle)+" "+params.get(MyConstants.paramsNote)+" "+params.get(MyConstants.noteID));
+
+                            if ((!noteText.getText().toString().isEmpty()) || (!titleText.getText().toString().isEmpty())) {
+                                new DBHelper(context).editNote(titleText.getText().toString(), noteText.getText().toString(), params.get(MyConstants.noteID));
                             }
                         }
                         Intent intent = new Intent(MyConstants.actionNewNote);

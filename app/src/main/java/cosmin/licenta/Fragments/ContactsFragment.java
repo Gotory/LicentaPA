@@ -75,8 +75,6 @@ public class ContactsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 if (!flag) {
                     displayWidth = view.getWidth();
-//                    layout = view.findViewById(R.id.contactLayout);
-//                    layout.animate().translationX(-displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     buttonsLayout = view.findViewById(R.id.contact_buttons_layout);
                     buttonsLayout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     buttonsLayout.setVisibility(View.VISIBLE);
@@ -107,7 +105,6 @@ public class ContactsFragment extends Fragment {
                     flag = true;
                 } else {
                     buttonsLayout.animate().translationX(displayWidth / MyConstants.DIVIDER_DELETE).setDuration(MyConstants.TRANSLATE_X_DELETE);
-//                    layout.animate().translationX(MyConstants.START_POINT_TRANSLATE_X).setDuration(MyConstants.TRANSLATE_X_DELETE);
                     buttonsLayout.setVisibility(View.GONE);
                     flag = false;
                 }

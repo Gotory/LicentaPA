@@ -584,7 +584,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
                                 if (fragment instanceof CurrencyFragment) {
                                     CurrencyFragment currencyFragment = (CurrencyFragment) fragment;
-                                    tts.speak("The result is " + currencyFragment.getSpecificCurrency(currency, Integer.valueOf(result)), TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak("The result is " + currencyFragment.getSpecificCurrency(currency, Double.valueOf(result)), TextToSpeech.QUEUE_FLUSH, null);
                                     step = 0;
                                     commandList.remove(0);
                                     makeNewCommand();

@@ -57,7 +57,7 @@ public class MethodTest {
             ArrayList<Note> list = dbHelper.getNotes();
             Note note = list.get(0);
 
-            dbHelper.editNote(note.getTitle(), "new title", "new db test");
+            dbHelper.editNote("new title", "new db test", "0");
         } catch (Exception e) {
             e.printStackTrace();
         }

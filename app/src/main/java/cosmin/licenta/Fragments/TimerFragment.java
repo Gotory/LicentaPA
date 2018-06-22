@@ -6,8 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,9 +20,11 @@ public class TimerFragment extends Fragment {
 
     private boolean started;
     private Timer timer;
-    private int sec, min;
-    private TextView secView, minView;
-    private String second, minute;
+    private int sec, min, milli;
+    private TextView secView, minView, milliView;
+    private String second, minute, millisecond;
+    private ArrayAdapter adapter;
+    private ArrayList<String> timeList;
 
     public TimerFragment() {
     }
@@ -42,12 +46,18 @@ public class TimerFragment extends Fragment {
 
         secView = rootView.findViewById(R.id.textSec);
         minView = rootView.findViewById(R.id.textMin);
+        milliView = rootView.findViewById(R.id.textMilli);
         sec = 0;
         min = 0;
+        milli = 0;
 
-        //todo - split into timer and stopwatch
+        timeList = new ArrayList<>();
 
-        rootView.findViewById(R.id.timer_layout).setOnClickListener(new View.OnClickListener() {
+        adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, timeList);
+
+//        rootView.findViewById(R.id.LapList); todo
+
+        rootView.findViewById(R.id.StartBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!started) {
@@ -55,6 +65,20 @@ public class TimerFragment extends Fragment {
                 } else {
                     stopTimer();
                 }
+            }
+        });
+
+        rootView.findViewById(R.id.LapBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                printLap();
+            }
+        });
+
+        rootView.findViewById(R.id.ResetBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetTimer();
             }
         });
 
@@ -79,18 +103,28 @@ public class TimerFragment extends Fragment {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                sec++;
+                milli++;
+                if (milli == 99) {
+                    sec++;
+                    milli = 0;
+                }
                 if (sec == 59) {
                     min++;
                     sec = 0;
                 }
                 if (min == 59) {
                     min = 0;
+                    stopTimer();
+                }
+                if (milli < 10) {
+                    millisecond = "0" + String.valueOf(milli);
+                } else {
+                    millisecond = String.valueOf(milli);
                 }
                 if (sec < 10) {
-                    second = "0" + String.valueOf(sec);
+                    second = "0" + String.valueOf(sec) + ":";
                 } else {
-                    second = String.valueOf(sec);
+                    second = String.valueOf(sec) + ":";
                 }
                 if (min < 10) {
                     minute = "0" + String.valueOf(min) + ":";
@@ -102,19 +136,32 @@ public class TimerFragment extends Fragment {
                     public void run() {
                         secView.setText(second);
                         minView.setText(minute);
+                        milliView.setText(millisecond);
                     }
                 });
             }
-        }, 0, 1000);
+        }, 0, 10);
     }
 
     public void stopTimer() {
-        if(timer!=null) {
+        if (timer != null) {
             started = false;
             sec = 0;
             min = 0;
+            milli = 0;
             timer.cancel();
             timer.purge();
         }
+    }
+
+    public void resetTimer() {
+        stopTimer();
+        secView.setText("00:");
+        minView.setText("00:");
+        milliView.setText("00");
+    }
+
+    public void printLap() {
+
     }
 }
