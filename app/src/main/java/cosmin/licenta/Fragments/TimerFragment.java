@@ -2,11 +2,14 @@ package cosmin.licenta.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ public class TimerFragment extends Fragment {
     private String second, minute, millisecond;
     private ArrayAdapter adapter;
     private ArrayList<String> timeList;
+    private ListView lapList;
+    private Button startButton;
 
     public TimerFragment() {
     }
@@ -53,16 +58,20 @@ public class TimerFragment extends Fragment {
 
         timeList = new ArrayList<>();
 
-        adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, timeList);
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, timeList);
 
-//        rootView.findViewById(R.id.LapList); todo
+        lapList = rootView.findViewById(R.id.LapList);
+        lapList.setAdapter(adapter);
 
-        rootView.findViewById(R.id.StartBtn).setOnClickListener(new View.OnClickListener() {
+        startButton = rootView.findViewById(R.id.StartBtn);
+        startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!started) {
+                    startButton.setText(getContext().getString(R.string.stop_timer));
                     startTimer();
                 } else {
+                    startButton.setText(getContext().getString(R.string.start_timer));
                     stopTimer();
                 }
             }
@@ -146,9 +155,6 @@ public class TimerFragment extends Fragment {
     public void stopTimer() {
         if (timer != null) {
             started = false;
-            sec = 0;
-            min = 0;
-            milli = 0;
             timer.cancel();
             timer.purge();
         }
@@ -156,12 +162,23 @@ public class TimerFragment extends Fragment {
 
     public void resetTimer() {
         stopTimer();
-        secView.setText("00:");
-        minView.setText("00:");
-        milliView.setText("00");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sec = 0;
+                min = 0;
+                milli = 0;
+                secView.setText("00:");
+                minView.setText("00:");
+                milliView.setText("00");
+            }
+        }, 200);
+
     }
 
     public void printLap() {
-
+        String lap = minView.getText().toString()+secView.getText().toString()+milliView.getText().toString();
+        timeList.add(lap);
+        adapter.notifyDataSetChanged();
     }
 }

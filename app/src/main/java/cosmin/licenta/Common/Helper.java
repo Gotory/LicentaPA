@@ -276,7 +276,7 @@ public class Helper {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View view = inflater.inflate(R.layout.one_et_dialog, null);
                 builder.setView(view);
-                builder.setTitle("Give the sum");
+                builder.setTitle(R.string.dialog_sum);
                 builder.setPositiveButton(R.string.general_dialog_send, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

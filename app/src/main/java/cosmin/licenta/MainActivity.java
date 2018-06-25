@@ -216,59 +216,92 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
                     for (String result : results) {
-                        if (result.toLowerCase().contains(getString(R.string.call)) || result.toLowerCase().contains("dial")) {
-                            commandList.add("call");
-                        }
-                        if (result.toLowerCase().contains(getString(R.string.sms)) || result.toLowerCase().contains("message")) {
-                            commandList.add("sms");
-                        }
-                        if (result.toLowerCase().contains("add contact")) {
-                            commandList.add("add_contact");
-                        }
-                        if (result.toLowerCase().contains("exit") || result.toLowerCase().contains("log out") || result.toLowerCase().contains("close") || result.toLowerCase().contains("stop app") || result.toLowerCase().contains("log off")) {
-                            commandList.add("exit");
-                            drawerButtonActions(R.id.nav_log_out);
-                        }
-                        if (result.toLowerCase().contains("nothing")) {
-                            if (commandList.isEmpty()) {
-                                commandList.add("nothing");
+                        for (String key : getResources().getStringArray(R.array.call_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("call");
+                                break;
                             }
                         }
-                        if (result.toLowerCase().contains("directions") || result.toLowerCase().contains("navigation") || result.toLowerCase().contains("rout") || result.toLowerCase().contains("gps")) {
-                            commandList.add("navigation");
+                        for (String key : getResources().getStringArray(R.array.sms_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("sms");
+                            }
                         }
-                        if (result.toLowerCase().contains("event") || result.toLowerCase().contains("reminder") || result.toLowerCase().contains("calendar")) {
-                            commandList.add("event");
+                        for (String key : getResources().getStringArray(R.array.add_contact_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("add_contact");
+                            }
                         }
-                        if (result.toLowerCase().contains("currency") || result.toLowerCase().contains("exchange")) {
-                            commandList.add("currency");
+                        for (String key : getResources().getStringArray(R.array.log_out_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("exit");
+                                drawerButtonActions(R.id.nav_log_out);
+                            }
                         }
-                        if (result.toLowerCase().contains("timer") || result.toLowerCase().contains("chronometer")) {
-                            drawerButtonActions(R.id.nav_timer);
-                            commandList.add("timer");
+                        for (String key : getResources().getStringArray(R.array.nothing_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                if (commandList.isEmpty()) {
+                                    commandList.add("nothing");
+                                }
+                            }
                         }
-                        if (result.toLowerCase().contains("reset") || result.equals("stop timer")) {
-                            drawerButtonActions(R.id.nav_timer);
-                            commandList.add("reset");
+                        for (String key : getResources().getStringArray(R.array.gps_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("navigation");
+                            }
                         }
-                        if (result.toLowerCase().contains("clear notes") || result.toLowerCase().contains("delete notes")) {
-                            commandList.add("delete_notes");
+                        for (String key : getResources().getStringArray(R.array.event_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("event");
+                            }
                         }
-                        if (result.toLowerCase().contains("clear routes") || result.toLowerCase().contains("delete gps information")) {
-                            drawerButtonActions(R.id.nav_gps);
-                            commandList.add("delete_gps");
+                        for (String key : getResources().getStringArray(R.array.currency_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("currency");
+                            }
                         }
-                        if (result.toLowerCase().contains("change name") || result.toLowerCase().contains("modify username") || result.toLowerCase().contains("change username") || result.toLowerCase().contains("modify name")) {
-                            commandList.add("change_user");
+                        for (String key : getResources().getStringArray(R.array.timer_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                drawerButtonActions(R.id.nav_timer);
+                                commandList.add("timer");
+                            }
                         }
-                        if (result.toLowerCase().contains("alarm")) {
-                            commandList.add("alarm");
+                        for (String key : getResources().getStringArray(R.array.reset_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                drawerButtonActions(R.id.nav_timer);
+                                commandList.add("reset");
+                            }
                         }
-                        if (result.toLowerCase().contains("note")) {
-                            commandList.add("home");
+                        for (String key : getResources().getStringArray(R.array.clear_notes_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("delete_notes");
+                            }
                         }
-                        if (result.toLowerCase().contains("calculate") || result.toLowerCase().contains("evaluate")) {
-                            commandList.add("calculate");
+                        for (String key : getResources().getStringArray(R.array.clear_gps_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                drawerButtonActions(R.id.nav_gps);
+                                commandList.add("delete_gps");
+                            }
+                        }
+                        for (String key : getResources().getStringArray(R.array.change_name_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("change_user");
+                            }
+                        }
+                        for (String key : getResources().getStringArray(R.array.alarm_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("alarm");
+                            }
+                        }
+                        for (String key : getResources().getStringArray(R.array.note_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("home");
+                            }
+                        }
+                        for (String key : getResources().getStringArray(R.array.calculate_key)) {
+                            if (result.toLowerCase().contains(key)) {
+                                commandList.add("calculate");
+                            }
                         }
                         if (result.toLowerCase().contains(getString(R.string.last_command))) {
                             String lastCommand = prefs.getString(MyConstants.prefsLastCommand, "");
@@ -276,11 +309,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 commandList.add(lastCommand);
                             }
                         }
+                        if (!commandList.isEmpty()) {
+                            break;
+                        }
                     }
                     if (commandList.isEmpty()) {
-                        tts.speak("You did not input a command please try again", TextToSpeech.QUEUE_FLUSH, null);
+                        tts.speak(getString(R.string.no_command), TextToSpeech.QUEUE_FLUSH, null);
                     } else if (commandList.get(0).equals("nothing")) {
-                        tts.speak("Why did you start me then", TextToSpeech.QUEUE_FLUSH, null);
+                        tts.speak(getString(R.string.nothing), TextToSpeech.QUEUE_FLUSH, null);
                         commandList.clear();
                     } else {
                         makeNewCommand();
@@ -300,16 +336,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 first = false;
                             }
                             String result = results.get(0);
-                            if (result.equals("no")) {
+                            if (result.equals(R.string.no)) {
                                 this.results.remove(0);
                             }
-                            if (!this.results.isEmpty() && !result.equals("yes")) {
+                            if (!this.results.isEmpty() && !result.equals(getString(R.string.yes))) {
                                 String name = this.results.get(0);
-                                tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.did_you_mean, name), TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else {
                                 if (this.results.isEmpty()) {
-                                    tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.no_match), TextToSpeech.QUEUE_FLUSH, null);
                                 } else {
                                     String name = this.results.get(0);
                                     for (Contact contact : fragment.mContactsList) {
@@ -322,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     }
                                     if (!first) {
                                         first = true;
-                                        tts.speak("Sorry did not find the contact in your contact list", TextToSpeech.QUEUE_FLUSH, null);
+                                        tts.speak(getString(R.string.no_contact), TextToSpeech.QUEUE_FLUSH, null);
                                     }
                                 }
                             }
@@ -336,16 +372,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     first = false;
                                 }
                                 String result = results.get(0);
-                                if (result.equals("no")) {
+                                if (result.equals(getString(R.string.no))) {
                                     this.results.remove(0);
                                 }
-                                if (!this.results.isEmpty() && !result.equals("yes")) {
+                                if (!this.results.isEmpty() && !result.equals(getString(R.string.yes))) {
                                     String name = this.results.get(0);
-                                    tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.did_you_mean, name), TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
                                 } else {
                                     if (this.results.isEmpty()) {
-                                        tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
+                                        tts.speak(getString(R.string.no_match), TextToSpeech.QUEUE_FLUSH, null);
                                     } else {
 
                                         for (Contact contact : fragment.mContactsList) {
@@ -357,13 +393,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 break;
                                             }
                                         }
+                                        if (step!=1) {
+                                            first = true;
+                                            tts.speak(getString(R.string.no_contact), TextToSpeech.QUEUE_FLUSH, null);
+                                        }
                                     }
                                 }
                                 break;
                             } else if (step == 1) {
                                 String result = results.get(0);
                                 Helper.getInstance().sendSMS(phone, result);
-                                tts.speak("Message sent", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.message_sent), TextToSpeech.QUEUE_FLUSH, null);
                                 step = 0;
                                 commandList.remove(0);
                                 first = true;
@@ -378,20 +418,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     first = false;
                                 }
                                 String result = results.get(0);
-                                if (result.equals("no")) {
+                                if (result.equals(getString(R.string.no))) {
                                     this.results.remove(0);
                                 }
-                                if (!this.results.isEmpty() && !result.equals("yes")) {
+                                if (!this.results.isEmpty() && !result.equals(getString(R.string.yes))) {
                                     String name = this.results.get(0);
-                                    tts.speak("Did you mean" + name, TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.did_you_mean, name), TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
                                 } else {
                                     if (this.results.isEmpty()) {
-                                        tts.speak("Sorry didn't find a match", TextToSpeech.QUEUE_FLUSH, null);
+                                        tts.speak(getString(R.string.no_match), TextToSpeech.QUEUE_FLUSH, null);
                                     } else {
                                         newContactName = this.results.get(0).toLowerCase();
                                         step++;
-                                        tts.speak("Now give me the phone number", TextToSpeech.QUEUE_FLUSH, null);
+                                        tts.speak(getString(R.string.give_number), TextToSpeech.QUEUE_FLUSH, null);
                                         listenAfterDelay(2000, true, this);
                                     }
                                 }
@@ -400,9 +440,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 String result = results.get(0);
                                 if (Helper.getInstance().isPhoneNumber(result)) {
                                     Helper.getInstance().addNewContact(this, newContactName, result);
-                                    tts.speak("contact added", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.contact_added), TextToSpeech.QUEUE_FLUSH, null);
                                 } else {
-                                    tts.speak("The given information was invalid please try again", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.not_a_phone), TextToSpeech.QUEUE_FLUSH, null);
                                 }
                                 step = 0;
                                 commandList.remove(0);
@@ -427,12 +467,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 break;
                             } else if (step == 1) {
                                 String result = results.get(0);
-                                if (result.equals("no")) {
+                                if (result.equals(getString(R.string.no))) {
                                     tts.speak("Specify start time", TextToSpeech.QUEUE_FLUSH, null);
                                     step += 2;
                                     newEventData.put(MyConstants.eventDesc, "");
                                     listenAfterDelay(2000, true, this);
-                                } else if (result.equals("yes")) {
+                                } else if (result.equals(getString(R.string.yes))) {
                                     newEventData.put(MyConstants.eventDesc, results.get(0));
                                     step++;
                                     tts.speak("OK. What is it", TextToSpeech.QUEUE_FLUSH, null);
@@ -440,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
                             } else if (step == 2) {
                                 String result = results.get(0);
-                                if (newEventData.get(MyConstants.eventDesc).equals("yes")) {
+                                if (newEventData.get(MyConstants.eventDesc).equals(getString(R.string.yes))) {
                                     newEventData.put(MyConstants.eventDesc, result);
                                     tts.speak("Specify start time", TextToSpeech.QUEUE_FLUSH, null);
                                     step++;
@@ -492,12 +532,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 5) {
                                 String result = results.get(0);
-                                if (result.equals("no")) {
+                                if (result.equals(getString(R.string.no))) {
                                     tts.speak("In what day", TextToSpeech.QUEUE_FLUSH, null);
                                     step += 2;
                                     newEventData.put(MyConstants.eventDesc, "");
                                     listenAfterDelay(2000, true, this);
-                                } else if (result.equals("yes")) {
+                                } else if (result.equals(getString(R.string.yes))) {
                                     newEventData.put(MyConstants.eventDesc, results.get(0));
                                     step++;
                                     tts.speak("OK. What is it", TextToSpeech.QUEUE_FLUSH, null);
@@ -602,7 +642,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 1) {
                                 String result = results.get(0);
-                                if (result.equals("no")) {
+                                if (result.equals(getString(R.string.no))) {
                                     note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm", Calendar.getInstance().getTime()).toString());
                                     new DBHelper(this).addNote(note);
                                     step = 0;

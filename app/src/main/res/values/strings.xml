@@ -55,5 +55,104 @@
     <string name="currency_type">Ron -> %1$s</string>
     <string name="event_added">Event successfully added</string>
     <string name="note_text_hint">Note text</string>
+    <string name="start_timer">Start Timer</string>
+    <string name="stop_timer">Stop Timer</string>
+    <string name="reset_timer">Reset Timer</string>
+    <string name="lap">Mark Lap</string>
+    <string name="no_command">You did not input a command please try again</string>
+    <string name="nothing">Why did you start me then</string>
+    <string name="did_you_mean">Did you mean %1$s</string>
+    <string name="no_match">Sorry didn\'t find a match</string>
+    <string name="no_contact">Sorry did not find the contact in your contact list</string>
+    <string name="message_sent">Message sent</string>
+    <string name="give_number">Now give me the phone number</string>
+    <string name="dialog_sum">Give the sum</string>
+    <string name="contact_added">Contact added</string>
+    <string name="not_a_phone">The given information was invalid please try again</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+
+    <string-array name="call_key">
+        <item>call</item>
+        <item>dial</item>
+    </string-array>
+
+    <string-array name="sms_key">
+        <item>sms</item>
+        <item>message</item>
+    </string-array>
+
+    <string-array name="add_contact_key">
+        <item>add contact</item>
+    </string-array>
+
+    <string-array name="log_out_key">
+        <item>exit</item>
+        <item>log out</item>
+        <item>close</item>
+        <item>stop</item>
+        <item>log off</item>!~
+    </string-array>
+
+    <string-array name="gps_key">
+        <item>directions</item>
+        <item>navigation</item>
+        <item>route</item>
+        <item>gps</item>
+    </string-array>
+
+    <string-array name="timer_key">
+        <item>timer</item>
+        <item>chronometer</item>
+    </string-array>
+
+    <string-array name="nothing_key">
+        <item>nothing</item>
+    </string-array>
+
+    <string-array name="event_key">
+        <item>event</item>
+        <item>reminder</item>
+        <item>calendar</item>
+    </string-array>
+
+    <string-array name="currency_key">
+        <item>currency</item>
+        <item>exchange</item>
+    </string-array>
+
+    <string-array name="reset_key">
+        <item>reset</item>
+    </string-array>
+
+    <string-array name="clear_notes_key">
+        <item>clear notes</item>
+        <item>delete notes</item>
+    </string-array>
+
+    <string-array name="clear_gps_key">
+        <item>clear routes</item>
+        <item>delete gps information</item>
+    </string-array>
+
+    <string-array name="change_name_key">
+        <item>change name</item>
+        <item>modify user</item>
+        <item>change user</item>
+        <item>modify name</item>
+    </string-array>
+
+    <string-array name="alarm_key">
+        <item>alarm</item>
+    </string-array>
+
+    <string-array name="note_key">
+        <item>note</item>
+    </string-array>
+
+    <string-array name="calculate_key">
+        <item>calculate</item>
+        <item>evaluate</item>
+    </string-array>
 
 </resources>
