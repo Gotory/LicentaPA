@@ -157,10 +157,10 @@ public class HomeFragment extends Fragment {
 
                 if (!prefs.getString(MyConstants.prefsUser, "").equals("")) {
                     activity.tts.speak(activity.getString(R.string.hello_user, prefs.getString(MyConstants.prefsUser, "")), TextToSpeech.QUEUE_FLUSH, null);
-                    activity.listenAfterDelay(5000, false, activity);
+                    activity.listenAfterDelay(2000, false, activity);
                 } else {
                     activity.tts.speak(activity.getString(R.string.hello_user_default), TextToSpeech.QUEUE_FLUSH, null);
-                    activity.listenAfterDelay(2000, false, activity);
+                    activity.listenAfterDelay(5000, false, activity);
                 }
             }
         });

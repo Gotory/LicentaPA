@@ -462,27 +462,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             if (step == 0) {
                                 newEventData.put(MyConstants.eventName, results.get(0));
                                 step++;
-                                tts.speak("Do you want a description", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.description_question), TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                                 break;
                             } else if (step == 1) {
                                 String result = results.get(0);
                                 if (result.equals(getString(R.string.no))) {
-                                    tts.speak("Specify start time", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.start_time), TextToSpeech.QUEUE_FLUSH, null);
                                     step += 2;
                                     newEventData.put(MyConstants.eventDesc, "");
                                     listenAfterDelay(2000, true, this);
                                 } else if (result.equals(getString(R.string.yes))) {
                                     newEventData.put(MyConstants.eventDesc, results.get(0));
                                     step++;
-                                    tts.speak("OK. What is it", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.what_is_it), TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
                                 }
                             } else if (step == 2) {
                                 String result = results.get(0);
                                 if (newEventData.get(MyConstants.eventDesc).equals(getString(R.string.yes))) {
                                     newEventData.put(MyConstants.eventDesc, result);
-                                    tts.speak("Specify start time", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.what_is_start_time), TextToSpeech.QUEUE_FLUSH, null);
                                     step++;
                                     listenAfterDelay(2000, true, this);
                                 }
@@ -506,7 +506,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 newEventDate.put(MyConstants.eventStartHour, Integer.valueOf(hour));
                                 newEventDate.put(MyConstants.eventStartMin, Integer.valueOf(minute));
                                 step++;
-                                tts.speak("Specify end time", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.what_is_end_time), TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 4) {
                                 Log.d("+++", results.toString());
@@ -528,19 +528,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 newEventDate.put(MyConstants.eventEndHour, Integer.valueOf(hour));
                                 newEventDate.put(MyConstants.eventEndMin, Integer.valueOf(minute));
                                 step++;
-                                tts.speak("Do you want a reminder?", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.reminder_question), TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 5) {
                                 String result = results.get(0);
                                 if (result.equals(getString(R.string.no))) {
-                                    tts.speak("In what day", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.what_day), TextToSpeech.QUEUE_FLUSH, null);
                                     step += 2;
                                     newEventData.put(MyConstants.eventDesc, "");
                                     listenAfterDelay(2000, true, this);
                                 } else if (result.equals(getString(R.string.yes))) {
                                     newEventData.put(MyConstants.eventDesc, results.get(0));
                                     step++;
-                                    tts.speak("OK. What is it", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.what_is_it), TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
                                 }
                             } else if (step == 6) {
@@ -563,25 +563,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 newEventDate.put(MyConstants.eventReminderHour, Integer.valueOf(hour));
                                 newEventDate.put(MyConstants.eventReminderMin, Integer.valueOf(minute));
                                 step++;
-                                tts.speak("In what day", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.what_day), TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 7) {
                                 String result = results.get(0);
                                 Log.d("+++", results.toString());
-                                if (result.equals("today")) {
+                                if (result.equals(getString(R.string.today))) {
                                     Date currentTime = Calendar.getInstance().getTime();
                                     newEventDate.put(MyConstants.eventDay, Integer.valueOf((String) DateFormat.format("dd", currentTime)));
                                     newEventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", currentTime)));
                                     newEventDate.put(MyConstants.eventYear, Integer.valueOf((String) DateFormat.format("yyyy", currentTime)));
                                     Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
                                     step = 0;
-                                    tts.speak("Event added succesfully", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.event_added), TextToSpeech.QUEUE_FLUSH, null);
                                     commandList.remove(0);
                                     makeNewCommand();
                                 } else {
                                     newEventDate.put(MyConstants.eventDay, Integer.valueOf(result));
                                     step++;
-                                    tts.speak("In what month", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.what_month), TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
                                 }
                             } else if (step == 8) {
@@ -595,7 +595,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     newEventDate.put(MyConstants.eventMonth, Integer.valueOf(outputFormat.format(cal.getTime())));
                                     Log.d("+++", outputFormat.format(cal.getTime()));
                                     step++;
-                                    tts.speak("In what year", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.what_year), TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
@@ -606,7 +606,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 newEventDate.put(MyConstants.eventYear, Integer.valueOf(result));
                                 Helper.getInstance().checkSaveEvent(this, newEventData, newEventDate);
                                 step = 0;
-                                tts.speak("Event added succesfully", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.event_added), TextToSpeech.QUEUE_FLUSH, null);
                                 commandList.remove(0);
                                 makeNewCommand();
                             }
@@ -617,14 +617,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 String result = results.get(0);
                                 currency = result;
                                 Log.d("+++", results.toString());
-                                tts.speak("Specify sum", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.specify_sum), TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 1) {
                                 String result = results.get(0);
                                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
                                 if (fragment instanceof CurrencyFragment) {
                                     CurrencyFragment currencyFragment = (CurrencyFragment) fragment;
-                                    tts.speak("The result is " + currencyFragment.getSpecificCurrency(currency, Double.valueOf(result)), TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.result, currencyFragment.getSpecificCurrency(currency, Double.valueOf(result))), TextToSpeech.QUEUE_FLUSH, null);
                                     step = 0;
                                     commandList.remove(0);
                                     makeNewCommand();
@@ -638,7 +638,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 note = new Note();
                                 note.setNote(result);
                                 step++;
-                                tts.speak("do you want a title for the note", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.want_title), TextToSpeech.QUEUE_FLUSH, null);
                                 listenAfterDelay(2000, true, this);
                             } else if (step == 1) {
                                 String result = results.get(0);
@@ -646,12 +646,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     note.setTitle(android.text.format.DateFormat.format("yyyy-MM-dd hh:mm", Calendar.getInstance().getTime()).toString());
                                     new DBHelper(this).addNote(note);
                                     step = 0;
-                                    tts.speak("Note added", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.note_added), TextToSpeech.QUEUE_FLUSH, null);
                                     commandList.remove(0);
                                     makeNewCommand();
                                 } else {
                                     step++;
-                                    tts.speak("Ok, what is it", TextToSpeech.QUEUE_FLUSH, null);
+                                    tts.speak(getString(R.string.what_is_it), TextToSpeech.QUEUE_FLUSH, null);
                                     listenAfterDelay(2000, true, this);
                                 }
                             } else if (step == 2) {
@@ -659,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 note.setTitle(result);
                                 new DBHelper(this).addNote(note);
                                 step = 0;
-                                tts.speak("Note added", TextToSpeech.QUEUE_FLUSH, null);
+                                tts.speak(getString(R.string.note_added), TextToSpeech.QUEUE_FLUSH, null);
                                 commandList.remove(0);
                                 makeNewCommand();
                             }
@@ -667,7 +667,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         case "change_user": {
                             String result = results.get(0);
                             prefs.edit().putString(MyConstants.prefsUser, result).apply();
-                            tts.speak("name has been changed", TextToSpeech.QUEUE_FLUSH, null);
+                            tts.speak(getString(R.string.name_changed), TextToSpeech.QUEUE_FLUSH, null);
                             commandList.remove(0);
                             makeNewCommand();
                             break;
@@ -698,7 +698,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), 1, intent, 0);
                             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmHour.getTimeInMillis(), pendingIntent);
-                            tts.speak("Alarm set", TextToSpeech.QUEUE_FLUSH, null);
+                            tts.speak(getString(R.string.alarm_set), TextToSpeech.QUEUE_FLUSH, null);
                             commandList.remove(0);
                             makeNewCommand();
                             break;
@@ -715,7 +715,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
                 break;
-                //todo add search?
             }
         }
     }
@@ -742,28 +741,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case "add_contact": {
                 prefs.edit().putString(MyConstants.prefsLastCommand, "add_contact").apply();
-                tts.speak("please specify contact name", TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(getString(R.string.specify_contact), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
             case "navigation": {
                 drawerButtonActions(R.id.nav_destination);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "navigation").apply();
-                tts.speak("Please specify destination", TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(getString(R.string.specify_destination), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
             case "event": {
                 drawerButtonActions(R.id.nav_reminders);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "event").apply();
-                tts.speak("Please specify event name", TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(getString(R.string.specify_event_name), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
             case "currency": {
                 drawerButtonActions(R.id.nav_currency);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "currency").apply();
-                tts.speak("Please specify currency", TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(getString(R.string.specify_currency), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
@@ -776,7 +775,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             TimerFragment timerFrag = (TimerFragment) fragment;
                             timerFrag.startTimer();
                             prefs.edit().putString(MyConstants.prefsLastCommand, "timer").apply();
-                            tts.speak("Timer started", TextToSpeech.QUEUE_FLUSH, null);
+                            tts.speak(getString(R.string.timer_started), TextToSpeech.QUEUE_FLUSH, null);
 
                         }
                     }
@@ -790,8 +789,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
                         if (fragment instanceof TimerFragment) {
                             TimerFragment timerFrag = (TimerFragment) fragment;
-                            timerFrag.stopTimer();
-                            tts.speak("Timer reset", TextToSpeech.QUEUE_FLUSH, null);
+                            timerFrag.resetTimer();
+                            tts.speak(getString(R.string.timer_reset), TextToSpeech.QUEUE_FLUSH, null);
                         }
                     }
                 }, 1000);
@@ -805,7 +804,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     homeFrag.mNoteList.clear();
                     homeFrag.mAdapter.notifyDataSetChanged();
                     prefs.edit().putString(MyConstants.prefsLastCommand, "delete_notes").apply();
-                    tts.speak("Notes deleted", TextToSpeech.QUEUE_FLUSH, null);
+                    tts.speak(getString(R.string.notes_deleted), TextToSpeech.QUEUE_FLUSH, null);
                 }
                 break;
             }
@@ -820,7 +819,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             gpsFrag.mDestinationList.clear();
                             gpsFrag.mAdapter.notifyDataSetChanged();
                             prefs.edit().putString(MyConstants.prefsLastCommand, "delete_gps").apply();
-                            tts.speak("Destinations cleared", TextToSpeech.QUEUE_FLUSH, null);
+                            tts.speak(getString(R.string.destinations_cleared), TextToSpeech.QUEUE_FLUSH, null);
                         }
                     }
                 }, 1000);
@@ -828,26 +827,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case "change_user": {
                 prefs.edit().putString(MyConstants.prefsLastCommand, "change_user").apply();
-                tts.speak("OK. How do you want me to call you", TextToSpeech.QUEUE_FLUSH, null);
-                listenAfterDelay(2000, true, this);
+                tts.speak(getString(R.string.change_user), TextToSpeech.QUEUE_FLUSH, null);
+                listenAfterDelay(4000, true, this);
                 break;
             }
             case "alarm": {
                 prefs.edit().putString(MyConstants.prefsLastCommand, "alarm").apply();
-                tts.speak("Please specify alarm time", TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(getString(R.string.specify_alarm), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
             case "home": {
                 drawerButtonActions(R.id.nav_home);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "home").apply();
-                tts.speak("Please specify note text", TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(getString(R.string.specify_note_text), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
             case "calculate": {
                 prefs.edit().putString(MyConstants.prefsLastCommand, "calculate").apply();
-                tts.speak("Please specify expression", TextToSpeech.QUEUE_FLUSH, null);
+                tts.speak(getString(R.string.specify_expression), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
                 break;
             }
