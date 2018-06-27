@@ -1,0 +1,188 @@
+<resources>
+    <string name="app_name"> PA </string>
+    <string name="no_reminders"> Niciun eveniment nu a fost setat încă </string>
+    <string name="no_notes"> Încă nu aveți nicio notiță </string>
+    <string name="add_note"> Adăugați notiță </string>
+    <string name="title_hint"> Adăugați titlu pentru notiță </string>
+    <string name="title_hint_event"> Adăugați titlul pentru eveniment </string>
+    <string name="event_description"> Adăugați o descriere a evenimentului </string>
+    <string name="contact_unknown"> Număr necunoscut </string>
+    <string name="answer_call"> Răspuns </string>
+    <string name="decline_call"> Închide </string>
+    <string name="access_notifications_dialog_title"> Accesul la notificare </string>
+    <string name="access_notifications_dialog_message"> Pentru a putea răspunde la apeluri folosind această aplicație, va trebui să activați accesul la notificări. </string>
+    <string name="cancel"> Anulare </string>
+    <string name="sms_dialog_title"> mesaj SMS </string>
+    <string name="sms_dialog_text"> Scrieți textul mesajelor dvs. de mai jos și apăsați trimiteți. </string>
+    <string name="note_dialog_title"> Adăugați notiță </string>
+    <string name="note_dialog_text"> Scrieți textul notiței </string>
+    <string name="dialog_contact_name"> Numele de contact </string>
+    <string name="dialog_contact_phone"> Telefon </string>
+    <string name="general_dialog_send"> Trimiteți </string>
+    <string name="general_dialog_ok"> OK </string>
+    <string name="contact_dialog_title"> Adăugați contactul </string>
+    <string name="contact_dialog_text"> Completați câmpurile pentru noua persoană de contact </string>
+    <string name="speech_prompt"> Spune ceva … </string>
+    <string name="speech_not_supported"> Ne pare rău! Dispozitivul dvs. nu acceptă comenzile vocale </string>
+    <string name="drawer_home"> Acasă </string>
+    <string name="drawer_contacts"> Contacte </string>
+    <string name="drawer_gps"> Navigație </string>
+    <string name="drawer_reminder"> Calendar </string>
+    <string name="drawer_timer"> Cronometru </string>
+    <string name="drawer_currency"> Rata de schimb </string>
+    <string name="drawer_start_listener"> Porniți ascultarea comenzilor </string>
+    <string name="drawer_add_contact"> Adăugați un contact </string>
+    <string name="drawer_exit_app"> Exit </string>
+    <string name="navigation_drawer_open"> Deschideți sertarul de navigare </string>
+    <string name="navigation_drawer_close"> Închideți sertarul de navigare </string>
+    <string name="tv_start"> Timp de pornire </string>
+    <string name="tv_end"> Timpul de sfârșit </string>
+    <string name="btn_event"> Adăugați evenimentul </string>
+    <string name="tv_reminder"> Timp de reamintire </string>
+    <string name="search_action_contact"> Căutarea de contacte </string>
+    <string name="btn_gps"> Start navigare </string>
+    <string name="gps_hint"> Destinație </string>
+    <string name="toast_complete_fields"> Completați toate câmpurile! </string>
+    <string name="hello_user"> Bună ziua %1$s, ce ai vrea să fac </string>
+    <string name="hello_user_default"> Bună ziua utilizator. Înainte de a începe, puteți să-mi spuneți numele dvs. </string>
+    <string name="user_set"> Încântat de cunostință %1$s. Ce ai vrea să fac </string>
+    <string name="to_who"> Cine ar trebui să %1$s </string>
+    <string name="call"> fie apelat </string>
+    <string name="send_sms"> primească mesajul </string>
+    <string name="sms"> sms </string>
+    <string name="last_command"> ultima comandă </string>
+    <string name="message"> Ce mesaj ar trebui să trimit </string>
+    <string name="currency_type"> Ron -> %1$s </string>
+    <string name="event_added"> Eveniment adăugat cu succes </string>
+    <string name="note_text_hint"> Textul notiței </string>
+    <string name="start_timer"> Pornire cronometru</string>
+    <string name="stop_timer"> Oprire cronometru</string>
+    <string name="reset_timer"> Resetare cronometru </string>
+    <string name="lap"> Retine tura</string>
+    <string name="no_command"> Nu ați introdus o comandă încercați din nou </string>
+    <string name="nothing"> Atunci de ce m-ai pornit?</string>
+    <string name="did_you_mean"> Ați vrut să spuneți %1$s </string>
+    <string name="no_match"> Îmi pare rău, nu am înțeles </string>
+    <string name="no_contact"> Îmi pare rău, nu am găsit contactul din lista dvs. </string>
+    <string name="message_sent"> Mesajul a fost trimis </string>
+    <string name="give_number"> Acum dă-mi numărul de telefon </string>
+    <string name="dialog_sum"> Dă suma </string>
+    <string name="contact_added"> Contactul a fost adăugat </string>
+    <string name="not_a_phone"> Informația dată nu a fost validată, încercați din nou </string>
+    <string name="description_question"> Vrei o descriere? </string>
+    <string name="start_time"> Specificați timpul de pornire </string>
+    <string name="what_is_it"> OK. Ce este acesta </string>
+    <string name="what_is_start_time"> Specificați timpul de pornire </string>
+    <string name="what_is_end_time"> Specificați timpul de sfarsit </string>
+    <string name="reminder_question"> Vrei un memento? </string>
+    <string name="today"> astăzi </string>
+    <string name="what_year"> În ce an </string>
+    <string name="what_month"> În ce lună </string>
+    <string name="what_day"> În ce zi </string>
+    <string name="specify_sum"> Specificați suma </string>
+    <string name="result"> Rezultatul este %1$s </string>
+    <string name="want_title"> Vrei un titlu pentru notiță? </string>
+    <string name="note_added"> Notiță adăugată </string>
+    <string name="name_changed"> Numele a fost schimbat </string>
+    <string name="alarm_set"> Alarma a fist setata </string>
+    <string name="specify_contact"> Specificați numele de contact </string>
+    <string name="specify_destination"> Specificați destinația </string>
+    <string name="specify_event_name"> Specificați numele evenimentului </string>
+    <string name="specify_currency"> Specificați valută </string>
+    <string name="timer_started"> Timerul a început </string>
+    <string name="timer_reset"> Cronometrul a fost resetat </string>
+    <string name="notes_deleted"> Notițele au fost șterse </string>
+    <string name="destinations_cleared"> Destinațiile au fost șterse </string>
+    <string name="change_user"> Ok. Cum vrei să îți spun </string>
+    <string name="specify_alarm"> Vă rugăm să specificați timpul alarmei </string>
+    <string name="specify_note_text"> Specificați textul notiței </string>
+    <string name="specify_expression"> Specificați expresia matematică </string>
+    <string name="yes"> da </string>
+    <string name="nu"> nu </string>
+
+    <string-array name="call_key">
+        <item>apel</item>
+        <item>suna</item>
+        <item>apeleaza</item>
+    </string-array>
+
+    <string-array name="sms_key">
+        <item>sms</item>
+        <item>mesaj</item>
+    </string-array>
+
+    <string-array name="add_contact_key">
+        <item>adauga un contact</item>
+    </string-array>
+
+    <string-array name="log_out_key">
+        <item>exit</item>
+        <item>deconectați</item>
+        <item>închide</item>
+        <item>oprire</item>
+    </string-array>
+
+    <string-array name="gps_key">
+        <item>traseu</item>
+        <item>navigare</item>
+        <item>traseu</item>
+        <item>gps</item>
+    </string-array>
+
+    <string-array name="timer_key">
+        <item>temporizator</item>
+        <item>cronometru</item>
+    </string-array>
+
+    <string-array name="nimic_key">
+        <item>nimic</item>
+    </string-array>
+
+    <string-array name="event_key">
+        <item>eveniment</item>
+        <item>memento</item>
+        <item>calendar</item>
+    </string-array>
+
+    <string-array name="currency_key">
+        <item>moneda</item>
+        <item>schimb</item>
+        <item>valuta</item>!
+    </string-array>
+
+    <string-array name="reset_key">
+        <item>resetare</item>
+    </string-array>
+
+    <string-array name="clear_notes_key">
+        <item>ștergeți notițele</item>
+    </string-array>
+
+    <string-array name="clear_gps_key">
+        <item>ștergeți rutele</item>
+        <item>șterge informațiile gps</item>
+    </string-array>
+
+    <string-array name="change_name_key">
+        <item>schimbare nume</item>
+        <item>modificați utilizatorul</item>
+        <item>schimbați utilizatorul</item>
+        <item>modificați numele</item>
+    </string-array>
+
+    <string-array name="alarm_key">
+        <item>alarmă</item>
+    </string-array>
+
+    <string-array name="note_key">
+        <item>notiță</item>
+    </string-array>
+
+    <string-array name="calculate_key">
+        <item>calculare</item>
+        <item>calculeaza</item>
+        <item>evalua</item>
+        <item>evalueaza</item>
+    </string-array>
+
+</resources>
