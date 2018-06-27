@@ -202,11 +202,11 @@ public class UI_tests {
 
             onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_timer));
 
-            onView(withId(R.id.timer_layout)).perform(click());
+            onView(withId(R.id.StartBtn)).perform(click());
 
             Thread.sleep(5000);
 
-            onView(withId(R.id.timer_layout)).perform(click());
+            onView(withId(R.id.StartBtn)).perform(click());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,31 +304,6 @@ public class UI_tests {
             onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(click());
 
             onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).onChildView(withId(R.id.decline_Btn)).perform(click());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase15() {
-        try {
-            onView(withId(R.id.drawer_layout))
-                    .check(matches(isClosed(Gravity.LEFT)))
-                    .perform(DrawerActions.open());
-
-            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_reminders));
-
-            onView(withId(R.id.event_name)).perform(typeText("test invalid"));
-            onView(withId(R.id.event_desc)).perform(typeText("data ar trebui sa fie cea curenta"));
-            onView(withId(R.id.start_time_hour)).perform(replaceText("12"));
-            onView(withId(R.id.start_time_minute)).perform(replaceText("25"));
-            onView(withId(R.id.end_time_hour)).perform(replaceText("11"));
-            onView(withId(R.id.end_time_minute)).perform(replaceText("25"));
-            onView(withId(R.id.reminder_time_hour)).perform(replaceText("00"));
-            onView(withId(R.id.reminder_time_minute)).perform(replaceText("05"));
-            onView(withClassName(Matchers.equalTo(CalendarView.class.getName()))).perform(PickerActions.setDate(2017, 5, 2));
-            onView(withId(R.id.add_event)).perform(click());
 
         } catch (Exception e) {
             e.printStackTrace();
