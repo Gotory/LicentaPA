@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PA</string>
+    <string name="app_name">Asicos</string>
     <string name="no_reminders">No events have been set yet</string>
     <string name="no_notes">You do not have any notes yet</string>
     <string name="add_note">Add note</string>

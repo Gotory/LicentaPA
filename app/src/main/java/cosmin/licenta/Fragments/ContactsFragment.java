@@ -138,7 +138,7 @@ public class ContactsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 filter(query.trim());
-                return false;
+                return true;
             }
 
             @Override

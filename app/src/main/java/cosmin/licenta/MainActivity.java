@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -236,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             if (result.toLowerCase().contains(key)) {
                                 commandList.add("exit");
                                 drawerButtonActions(R.id.nav_log_out);
+                                changeSelectedNavItem(this);
                             }
                         }
                         for (String key : getResources().getStringArray(R.array.nothing_key)) {
@@ -263,12 +266,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         for (String key : getResources().getStringArray(R.array.timer_key)) {
                             if (result.toLowerCase().contains(key)) {
                                 drawerButtonActions(R.id.nav_timer);
+                                changeSelectedNavItem(this);
                                 commandList.add("timer");
                             }
                         }
                         for (String key : getResources().getStringArray(R.array.reset_key)) {
                             if (result.toLowerCase().contains(key)) {
                                 drawerButtonActions(R.id.nav_timer);
+                                changeSelectedNavItem(this);
                                 commandList.add("reset");
                             }
                         }
@@ -280,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         for (String key : getResources().getStringArray(R.array.clear_gps_key)) {
                             if (result.toLowerCase().contains(key)) {
                                 drawerButtonActions(R.id.nav_gps);
+                                changeSelectedNavItem(this);
                                 commandList.add("delete_gps");
                             }
                         }
@@ -318,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else if (commandList.get(0).equals("nothing")) {
                         tts.speak(getString(R.string.nothing), TextToSpeech.QUEUE_FLUSH, null);
                         commandList.clear();
+                        finish();
                     } else {
                         makeNewCommand();
                     }
@@ -727,6 +734,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (command) {
             case "call": {
                 drawerButtonActions(R.id.nav_contacts);
+                changeSelectedNavItem(this);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "call").apply();
                 tts.speak(getString(R.string.to_who, getString(R.string.call)), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
@@ -734,6 +742,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case "sms": {
                 drawerButtonActions(R.id.nav_contacts);
+                changeSelectedNavItem(this);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "sms").apply();
                 tts.speak(getString(R.string.to_who, getString(R.string.send_sms)), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
@@ -747,6 +756,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case "navigation": {
                 drawerButtonActions(R.id.nav_destination);
+                changeSelectedNavItem(this);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "navigation").apply();
                 tts.speak(getString(R.string.specify_destination), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
@@ -754,6 +764,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case "event": {
                 drawerButtonActions(R.id.nav_reminders);
+                changeSelectedNavItem(this);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "event").apply();
                 tts.speak(getString(R.string.specify_event_name), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
@@ -761,6 +772,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case "currency": {
                 drawerButtonActions(R.id.nav_currency);
+                changeSelectedNavItem(this);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "currency").apply();
                 tts.speak(getString(R.string.specify_currency), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
@@ -803,6 +815,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     new DBHelper(this).deleteAllNotes();
                     homeFrag.mNoteList.clear();
                     homeFrag.mAdapter.notifyDataSetChanged();
+                    homeFrag.mNoNotesTV.setVisibility(View.VISIBLE);
                     prefs.edit().putString(MyConstants.prefsLastCommand, "delete_notes").apply();
                     tts.speak(getString(R.string.notes_deleted), TextToSpeech.QUEUE_FLUSH, null);
                 }
@@ -839,6 +852,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case "home": {
                 drawerButtonActions(R.id.nav_home);
+                changeSelectedNavItem(this);
                 prefs.edit().putString(MyConstants.prefsLastCommand, "home").apply();
                 tts.speak(getString(R.string.specify_note_text), TextToSpeech.QUEUE_FLUSH, null);
                 listenAfterDelay(2000, true, this);
@@ -855,7 +869,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 makeNewCommand();
             }
         }
-
     }
 
     public void listenAfterDelay(int delay, final boolean forArgs, final MainActivity activity) {
@@ -863,12 +876,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void run() {
                 if (!forArgs) {
-                    Helper.getInstance().promptSpeechInput(activity);
+                    promptSpeechInput(activity);
                 } else {
-                    Helper.getInstance().requestCommandArgs(activity);
+                    requestCommandArgs(activity);
                 }
             }
         }, delay);
+    }
+
+    public void promptSpeechInput(MainActivity activity) {
+        activity.commandList.clear();
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+
+        try {
+            activity.startActivityForResult(intent, MyConstants.REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(activity, activity.getString(R.string.speech_not_supported), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void requestCommandArgs(MainActivity activity) {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+
+        try {
+            activity.startActivityForResult(intent, MyConstants.REQ_CODE_ARGS);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(activity, activity.getString(R.string.speech_not_supported), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void changeSelectedNavItem(MainActivity activity) {
+        if (activity.navView != null) {
+            Fragment currentFragment = activity.getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
+            if (currentFragment instanceof ContactsFragment) {
+                activity.navView.getMenu().getItem(1).setChecked(true);
+            } else if (currentFragment instanceof EventReminderFragment) {
+                activity.navView.getMenu().getItem(3).setChecked(true);
+            } else if ((currentFragment instanceof GpsFragment)) {
+                activity.navView.getMenu().getItem(2).setChecked(true);
+            } else if (currentFragment instanceof HomeFragment) {
+                activity.navView.getMenu().getItem(0).setChecked(true);
+            } else if (currentFragment instanceof TimerFragment) {
+                activity.navView.getMenu().getItem(4).setChecked(true);
+            } else if (currentFragment instanceof CurrencyFragment) {
+                activity.navView.getMenu().getItem(5).setChecked(true);
+            }
+        }
     }
 
     @Override
@@ -961,14 +1019,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     tts.speak(activity.getString(R.string.hello_user_default), TextToSpeech.QUEUE_FLUSH, null);
                     listenAfterDelay(5000, false, this);
                 }
-                Helper.getInstance().changeSelectedNavItem(this);
+                changeSelectedNavItem(this);
                 break;
             }
             case R.id.nav_add_contact: {
                 HashMap<String, String> params = new HashMap<>();
                 params.put(MyConstants.paramsType, MyConstants.paramsContact);
                 Helper.getInstance().showDialog(this, params);
-                Helper.getInstance().changeSelectedNavItem(this);
+                changeSelectedNavItem(this);
                 break;
             }
             case R.id.nav_log_out: {

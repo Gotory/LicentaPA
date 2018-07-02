@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -123,6 +124,8 @@ public class UI_tests {
 
             onData(anything()).inAdapterView(withId(R.id.contacts_list)).atPosition(0).onChildView(withId(R.id.sms_button)).perform(click());
 
+            onView(withId(R.id.dialog_data)).perform(typeText("test message"));
+
             onView(withId(android.R.id.button2)).perform(click());
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,20 +134,6 @@ public class UI_tests {
 
     @Test
     public void testCase4() {
-        try {
-            onView(withId(R.id.action_add_note)).perform(click());
-
-            onView(withText(R.string.note_dialog_text)).check(matches(isDisplayed()));
-
-            onView(withId(android.R.id.button2)).perform(click());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase5() {
         try {
             onView(withId(R.id.action_add_note)).perform(click());
 
@@ -159,9 +148,97 @@ public class UI_tests {
         }
     }
 
+    @Test
+    public void testCase5() {
+        try {
+            onView(withId(R.id.drawer_layout))
+                    .check(matches(isClosed(Gravity.LEFT)))
+                    .perform(DrawerActions.open());
+
+            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_reminders));
+
+            onView(withId(R.id.event_name)).perform(typeText("test"));
+            onView(withId(R.id.event_desc)).perform(typeText("test description"));
+            onView(withId(R.id.start_time_hour)).perform(replaceText("13"));
+            onView(withId(R.id.start_time_minute)).perform(replaceText("25"));
+            onView(withId(R.id.end_time_hour)).perform(replaceText("14"));
+            onView(withId(R.id.end_time_minute)).perform(replaceText("55"));
+            onView(withId(R.id.reminder_time_hour)).perform(replaceText("00"));
+            onView(withId(R.id.reminder_time_minute)).perform(replaceText("05"));
+            onView(withId(R.id.add_event)).perform(click());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void testCase6() {
+        try {
+            onView(withId(R.id.drawer_layout))
+                    .check(matches(isClosed(Gravity.LEFT)))
+                    .perform(DrawerActions.open());
+
+            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_currency));
+
+            onData(anything()).inAdapterView(withId(R.id.currency_list)).atPosition(0).perform(longClick());
+
+            onView(withId(R.id.dialog_data)).perform(typeText("25"));
+
+            onView(withId(android.R.id.button1)).perform(click());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCase7() {
+        try {
+            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(longClick());
+
+            onView(withId(R.id.note_text)).perform(clearText());
+
+            onView(withId(R.id.note_text)).perform(typeText("new test"));
+
+            onView(withId(android.R.id.button1)).perform(click());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCase8() {
+        try {
+            onView(withId(R.id.action_add_note)).perform(click());
+
+            onView(withId(R.id.note_text)).perform(typeText("test"));
+
+            onView(withId(android.R.id.button1)).perform(click());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCase9() {
+        try {
+            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(click());
+
+            Thread.sleep(1000);
+
+            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).onChildView(withId(R.id.delete_btn)).perform(click());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testCase10() {
         try {
             onView(withId(R.id.drawer_layout))
                     .check(matches(isClosed(Gravity.LEFT)))
@@ -178,83 +255,6 @@ public class UI_tests {
     }
 
     @Test
-    public void testCase7() {
-        try {
-            onView(withId(R.id.drawer_layout))
-                    .check(matches(isClosed(Gravity.LEFT)))
-                    .perform(DrawerActions.open());
-
-            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_gps));
-
-            onData(anything()).inAdapterView(withId(R.id.contacts_list)).atPosition(0).perform(click());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase8() {
-        try {
-            onView(withId(R.id.drawer_layout))
-                    .check(matches(isClosed(Gravity.LEFT)))
-                    .perform(DrawerActions.open());
-
-            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_timer));
-
-            onView(withId(R.id.StartBtn)).perform(click());
-
-            Thread.sleep(5000);
-
-            onView(withId(R.id.StartBtn)).perform(click());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase9() {
-        try {
-            onView(withId(R.id.drawer_layout))
-                    .check(matches(isClosed(Gravity.LEFT)))
-                    .perform(DrawerActions.open());
-
-            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_reminders));
-
-            onView(withId(R.id.event_name)).perform(typeText("test"));
-            onView(withId(R.id.event_desc)).perform(typeText("test description"));
-            onView(withId(R.id.start_time_hour)).perform(replaceText("13"));
-            onView(withId(R.id.start_time_minute)).perform(replaceText("25"));
-            onView(withId(R.id.end_time_hour)).perform(replaceText("14"));
-            onView(withId(R.id.end_time_minute)).perform(replaceText("55"));
-            onView(withId(R.id.reminder_time_hour)).perform(replaceText("00"));
-            onView(withId(R.id.reminder_time_minute)).perform(replaceText("05"));
-            onView(withClassName(Matchers.equalTo(CalendarView.class.getName()))).perform(PickerActions.setDate(2018, 6, 5));
-            onView(withId(R.id.add_event)).perform(click());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase10() {
-        try {
-            onView(withId(R.id.drawer_layout))
-                    .check(matches(isClosed(Gravity.LEFT)))
-                    .perform(DrawerActions.open());
-
-            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_currency));
-
-            onData(anything()).inAdapterView(withId(R.id.currency_list)).atPosition(0).perform(longClick());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
     public void testCase11() {
         try {
             onView(withId(R.id.drawer_layout))
@@ -263,7 +263,7 @@ public class UI_tests {
 
             onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_gps));
 
-            onData(anything()).inAdapterView(withId(R.id.last_location_list)).atPosition(0).perform(longClick());
+            onData(anything()).inAdapterView(withId(R.id.last_location_list)).atPosition(0).perform(click());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -273,37 +273,13 @@ public class UI_tests {
     @Test
     public void testCase12() {
         try {
-            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(longClick());
+            onView(withId(R.id.drawer_layout))
+                    .check(matches(isClosed(Gravity.LEFT)))
+                    .perform(DrawerActions.open());
 
-            onView(withId(R.id.note_text)).perform(typeText("new test"));
+            onView(withId(R.id.navigation_view)).perform(NavigationViewActions.navigateTo(R.id.nav_gps));
 
-            onView(withId(android.R.id.button1)).perform(click());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase13() {
-        try {
-            onView(withId(R.id.action_add_note)).perform(click());
-
-            onView(withId(R.id.note_text)).perform(typeText("test"));
-
-            onView(withId(android.R.id.button1)).perform(click());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase14() {
-        try {
-            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).perform(click());
-
-            onData(anything()).inAdapterView(withId(R.id.note_list)).atPosition(0).onChildView(withId(R.id.decline_Btn)).perform(click());
+            onData(anything()).inAdapterView(withId(R.id.last_location_list)).atPosition(0).perform(longClick());
 
         } catch (Exception e) {
             e.printStackTrace();

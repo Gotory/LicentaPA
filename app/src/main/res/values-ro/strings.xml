@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"> PA </string>
+    <string name="app_name"> Asicos </string>
     <string name="no_reminders"> Niciun eveniment nu a fost setat încă </string>
     <string name="no_notes"> Încă nu aveți nicio notiță </string>
     <string name="add_note"> Adăugați notiță </string>
@@ -125,7 +125,7 @@
     <string-array name="gps_key">
         <item>traseu</item>
         <item>navigare</item>
-        <item>traseu</item>
+        <item>ruta</item>
         <item>gps</item>
     </string-array>
 
@@ -155,19 +155,19 @@
     </string-array>
 
     <string-array name="clear_notes_key">
-        <item>ștergeți notițele</item>
+        <item>șterge notițele</item>
     </string-array>
 
     <string-array name="clear_gps_key">
-        <item>ștergeți rutele</item>
+        <item>șterge rutele</item>
         <item>șterge informațiile gps</item>
     </string-array>
 
     <string-array name="change_name_key">
-        <item>schimbare nume</item>
-        <item>modificați utilizatorul</item>
-        <item>schimbați utilizatorul</item>
-        <item>modificați numele</item>
+        <item>schimba nume</item>
+        <item>modifica utilizatorul</item>
+        <item>schimba utilizatorul</item>
+        <item>modifica numele</item>
     </string-array>
 
     <string-array name="alarm_key">
@@ -181,7 +181,7 @@
     <string-array name="calculate_key">
         <item>calculare</item>
         <item>calculeaza</item>
-        <item>evalua</item>
+        <item>evaluare</item>
         <item>evalueaza</item>
     </string-array>
 

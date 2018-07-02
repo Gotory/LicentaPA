@@ -2,7 +2,6 @@ package cosmin.licenta.Common;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -18,7 +17,6 @@ import android.os.RemoteException;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
 import android.provider.Settings;
-import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
@@ -31,15 +29,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 
 import cosmin.licenta.AnswerCallsActivity;
-import cosmin.licenta.Fragments.ContactsFragment;
-import cosmin.licenta.Fragments.CurrencyFragment;
-import cosmin.licenta.Fragments.EventReminderFragment;
-import cosmin.licenta.Fragments.GpsFragment;
 import cosmin.licenta.Fragments.HomeFragment;
-import cosmin.licenta.Fragments.TimerFragment;
 import cosmin.licenta.MainActivity;
 import cosmin.licenta.R;
 
@@ -66,51 +58,6 @@ public class Helper {
         String packageName = context.getPackageName();
 
         return enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName);
-    }
-
-    public void promptSpeechInput(MainActivity activity) {
-        activity.commandList.clear();
-
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-
-        try {
-            activity.startActivityForResult(intent, MyConstants.REQ_CODE_SPEECH_INPUT);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(activity, activity.getString(R.string.speech_not_supported), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void requestCommandArgs(MainActivity activity) {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-
-        try {
-            activity.startActivityForResult(intent, MyConstants.REQ_CODE_ARGS);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(activity, activity.getString(R.string.speech_not_supported), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void changeSelectedNavItem(MainActivity activity) {
-        if (activity.navView != null) {
-            Fragment currentFragment = activity.getSupportFragmentManager().findFragmentById(R.id.frag_content_frame);
-            if (currentFragment instanceof ContactsFragment) {
-                activity.navView.getMenu().getItem(1).setChecked(true);
-            } else if (currentFragment instanceof EventReminderFragment) {
-                activity.navView.getMenu().getItem(3).setChecked(true);
-            } else if ((currentFragment instanceof GpsFragment)) {
-                activity.navView.getMenu().getItem(2).setChecked(true);
-            } else if (currentFragment instanceof HomeFragment) {
-                activity.navView.getMenu().getItem(0).setChecked(true);
-            } else if (currentFragment instanceof TimerFragment) {
-                activity.navView.getMenu().getItem(4).setChecked(true);
-            } else if (currentFragment instanceof CurrencyFragment) {
-                activity.navView.getMenu().getItem(5).setChecked(true);
-            }
-        }
     }
 
     public double eval(final String str) {
@@ -284,8 +231,8 @@ public class Helper {
                         if (!currencyText.getText().toString().isEmpty()) {
                             double sum = Double.valueOf(currencyText.getText().toString());
                             double rate = Double.valueOf(params.get(MyConstants.paramsCurrency));
-                            double result = sum/rate;
-                            Toast.makeText(context, String.valueOf(result) , Toast.LENGTH_SHORT).show();
+                            double result = sum / rate;
+                            Toast.makeText(context, String.valueOf(result), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -325,7 +272,7 @@ public class Helper {
                         } else {
                             Log.d("+++", "edit note2");
 
-                            Log.d("+++", params.get(MyConstants.paramsTitle)+" "+params.get(MyConstants.paramsNote)+" "+params.get(MyConstants.noteID));
+                            Log.d("+++", params.get(MyConstants.paramsTitle) + " " + params.get(MyConstants.paramsNote) + " " + params.get(MyConstants.noteID));
 
                             if ((!noteText.getText().toString().isEmpty()) || (!titleText.getText().toString().isEmpty())) {
                                 new DBHelper(context).editNote(titleText.getText().toString(), noteText.getText().toString(), params.get(MyConstants.noteID));

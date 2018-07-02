@@ -5,6 +5,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,47 +26,18 @@ public class MethodTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void testCase1() {
-        Context appContext = InstrumentationRegistry.getTargetContext();
-        assertEquals("cosmin.licenta", appContext.getPackageName());
-    }
-
-
-    @Test
-    public void testCase2() {
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
-        try {
-            DBHelper dbHelper = new DBHelper(appContext);
-
-            Note note = new Note();
-            note.setNote("test db");
-            note.setTitle("test");
-            dbHelper.addNote(note);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testCase3() {
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
-        try {
-            DBHelper dbHelper = new DBHelper(appContext);
-
-            ArrayList<Note> list = dbHelper.getNotes();
-            Note note = list.get(0);
-
-            dbHelper.editNote("new title", "new db test", "0");
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void getHelperInstance() {
+        Helper helper = Helper.getInstance();
+        if(helper != null) {
+            assert true;
+        } else {
+            Assert.fail();
         }
     }
 
 
     @Test
-    public void testCase4() {
+    public void testAddLocation() {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         try {
@@ -79,14 +51,23 @@ public class MethodTest {
     }
 
     @Test
-    public void testCase5() {
+    public void testEval() {
         assertEquals(String.valueOf(Helper.getInstance().eval("((4 - 2^3 + 1) * -sqrt(3*3+4*4)) / 2")),"7.5");
     }
 
     @Test
-    public void testCase6() {
+    public void testIsPhoneNumber() {
         try{
             Helper.getInstance().isPhoneNumber("0729080553");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testSendMessage() {
+        try{
+            Helper.getInstance().sendSMS("0729080553","mesaj de test");
         } catch (Exception e){
             e.printStackTrace();
         }

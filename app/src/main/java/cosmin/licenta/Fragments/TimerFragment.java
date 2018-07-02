@@ -171,6 +171,8 @@ public class TimerFragment extends Fragment {
                 secView.setText("00:");
                 minView.setText("00:");
                 milliView.setText("00");
+                timeList.clear();
+                adapter.notifyDataSetChanged();
             }
         }, 200);
 

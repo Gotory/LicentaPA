@@ -142,11 +142,11 @@ public class AnswerCallsActivity extends Activity {
                 clazz = Class.forName(tm.getClass().getName());
                 Method method = clazz.getDeclaredMethod("getITelephony");
                 method.setAccessible(true);
-                Object telephonyService = method.invoke(tm); // Get the internal ITelephony object
-                clazz = Class.forName(telephonyService.getClass().getName()); // Get its class
-                method = clazz.getDeclaredMethod("endCall"); // Get the "endCall()" method
-                method.setAccessible(true); // Make it accessible
-                method.invoke(telephonyService); // invoke endCall()
+                Object telephonyService = method.invoke(tm);
+                clazz = Class.forName(telephonyService.getClass().getName());
+                method = clazz.getDeclaredMethod("endCall");
+                method.setAccessible(true);
+                method.invoke(telephonyService);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -76,7 +76,7 @@ public class EventReminderFragment extends Fragment {
         reminderTimeHour.setText("00");
         reminderTimeMin.setText("00");
         eventDate.put(MyConstants.eventDay, Integer.valueOf((String) DateFormat.format("dd", currentTime)));
-        eventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", currentTime)));
+        eventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", currentTime))-1);
         eventDate.put(MyConstants.eventYear, Integer.valueOf((String) DateFormat.format("yyyy", currentTime)));
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -104,18 +104,17 @@ public class EventReminderFragment extends Fragment {
                 if (checkFields()) {
                     titleET.setText("");
                     descriptionET.setText("");
-                    startTimeHour.setText("");
-                    endTimeHour.setText("");
-                    reminderTimeHour.setText("");
-                    startTimeMin.setText("");
-                    endTimeMin.setText("");
-                    reminderTimeMin.setText("");
+                    startTimeHour.setText(DateFormat.format("kk ", currentTime));
+                    startTimeMin.setText(DateFormat.format("mm", currentTime));
+                    endTimeHour.setText(DateFormat.format("kk ", currentTime));
+                    endTimeMin.setText(DateFormat.format("mm", currentTime));
+                    reminderTimeHour.setText("00");
+                    reminderTimeMin.setText("00");
                     Toast.makeText(mContext, getString(R.string.event_added), Toast.LENGTH_SHORT).show();
                     Helper.getInstance().checkSaveEvent(mContext, params, eventDate);
                 }
             }
         });
-        //todo find a way to show events
 
         return rootView;
     }
@@ -134,7 +133,7 @@ public class EventReminderFragment extends Fragment {
         if (eventDate.get(MyConstants.eventYear) < Integer.valueOf((String) DateFormat.format("yyyy", currentTime))) {
             eventDate.put(MyConstants.eventYear, Integer.valueOf((String) DateFormat.format("yyyy", currentTime)));
         }
-        if (eventDate.get(MyConstants.eventYear).equals(Integer.valueOf((String) DateFormat.format("yyyy", currentTime))) && eventDate.get(MyConstants.eventMonth) < Integer.valueOf((String) DateFormat.format("MM", currentTime))) {
+        if (eventDate.get(MyConstants.eventYear).equals(Integer.valueOf((String) DateFormat.format("yyyy", currentTime))) && eventDate.get(MyConstants.eventMonth) < Integer.valueOf((String) DateFormat.format("MM", currentTime))-1) {
             eventDate.put(MyConstants.eventMonth, Integer.valueOf((String) DateFormat.format("MM", currentTime)));
         }
         if (eventDate.get(MyConstants.eventYear).equals(Integer.valueOf((String) DateFormat.format("yyyy", currentTime))) && eventDate.get(MyConstants.eventMonth).equals(Integer.valueOf((String) DateFormat.format("MM", currentTime))) && eventDate.get(MyConstants.eventDay) < Integer.valueOf((String) DateFormat.format("dd", currentTime))) {
