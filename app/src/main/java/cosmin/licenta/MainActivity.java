@@ -1078,7 +1078,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switch (state) {
                 case TelephonyManager.CALL_STATE_OFFHOOK: {
                     wasInCall = true;
-                    setSpeakerPhoneOn();
                     break;
                 }
 
@@ -1114,11 +1113,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
                 }
             }
-        }
-
-        private void setSpeakerPhoneOn() {
-            MainActivity.audioManager.setMode(AudioManager.MODE_IN_CALL);
-            MainActivity.audioManager.setSpeakerphoneOn(true);
         }
     }
 }
