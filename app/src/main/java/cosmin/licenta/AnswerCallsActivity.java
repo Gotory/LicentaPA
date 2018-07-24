@@ -147,6 +147,7 @@ public class AnswerCallsActivity extends Activity {
                 method = clazz.getDeclaredMethod("endCall");
                 method.setAccessible(true);
                 method.invoke(telephonyService);
+                this.finish();
             }
         } catch (Exception e) {
             e.printStackTrace();

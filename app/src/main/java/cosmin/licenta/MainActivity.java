@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
-                    tts.setLanguage(Locale.UK);
+                    tts.setLanguage(getResources().getConfiguration().locale);
                 }
             }
         });
@@ -460,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                         case "navigation": {
                             String result = results.get(0);
+                            new DBHelper(this).addDest(result);
                             Helper.getInstance().startMaps(this, result);
                             commandList.clear();
                             makeNewCommand();
@@ -666,10 +667,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 note.setTitle(result);
                                 new DBHelper(this).addNote(note);
                                 step = 0;
+                                Intent intent = new Intent();
+                                intent.setAction(MyConstants.actionNewNote);
+                                sendBroadcast(intent);
                                 tts.speak(getString(R.string.note_added), TextToSpeech.QUEUE_FLUSH, null);
                                 commandList.remove(0);
                                 makeNewCommand();
                             }
+                            break;
                         }
                         case "change_user": {
                             String result = results.get(0);

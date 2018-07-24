@@ -98,7 +98,7 @@
     <string name="specify_note_text"> Specificați textul notiței </string>
     <string name="specify_expression"> Specificați expresia matematică </string>
     <string name="yes"> da </string>
-    <string name="nu"> nu </string>
+    <string name="no"> nu </string>
 
     <string-array name="call_key">
         <item>apel</item>
@@ -134,7 +134,7 @@
         <item>cronometru</item>
     </string-array>
 
-    <string-array name="nimic_key">
+    <string-array name="nothing_key">
         <item>nimic</item>
     </string-array>
 
@@ -146,8 +146,7 @@
 
     <string-array name="currency_key">
         <item>moneda</item>
-        <item>schimb</item>
-        <item>valuta</item>!
+        <item>valuta</item>
     </string-array>
 
     <string-array name="reset_key">
@@ -164,10 +163,10 @@
     </string-array>
 
     <string-array name="change_name_key">
-        <item>schimba nume</item>
-        <item>modifica utilizatorul</item>
-        <item>schimba utilizatorul</item>
-        <item>modifica numele</item>
+        <item>schimbă nume</item>
+        <item>modifică utilizatorul</item>
+        <item>schimbă utilizatorul</item>
+        <item>modifică numele</item>
     </string-array>
 
     <string-array name="alarm_key">

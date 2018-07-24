@@ -90,6 +90,8 @@ public class GpsFragment extends Fragment {
                     if(!mDestinationList.contains(destination)) {
                         new DBHelper(mContext).addDest(destination);
                     }
+                    mDestinationList.add(destination);
+                    mAdapter.notifyDataSetChanged();
                     destination = destination.replaceAll(" ", "+");
                     Helper.getInstance().startMaps(mContext,destination);
                 }
